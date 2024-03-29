@@ -1,0 +1,6 @@
+.column {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  justify-self: stretch;
+}
