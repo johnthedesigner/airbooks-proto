@@ -4,12 +4,11 @@ import _ from "lodash";
 import {
   BarChart,
   Bar,
-  //   Cell,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 
@@ -20,9 +19,15 @@ import { mapRating } from "@/utils/dataUtils";
 
 interface chartProps {
   chartData: any;
+  handleFilterUpdate: Function;
+  filter: any;
 }
 
-const CategoryCard = ({ chartData }: chartProps) => {
+const CategoryCard = ({
+  chartData,
+  handleFilterUpdate,
+  filter,
+}: chartProps) => {
   // Ratings categories
   const ratingsCategories = [
     "B-",
@@ -85,6 +90,29 @@ const CategoryCard = ({ chartData }: chartProps) => {
     }
   });
 
+  const handleClick = (data: any, index: number) => {
+    console.log("BAR CLICKED", data, index);
+    handleFilterUpdate("rating", data.name);
+  };
+
+  const barColor = (
+    name: string,
+    filter: any,
+    activeColor: string,
+    inactiveColor: string
+  ) => {
+    // if this color is in the filter, or no filter exists use active color
+    if (
+      _.includes(filter.rating, name) ||
+      filter.rating === undefined ||
+      filter.rating.length === 0
+    ) {
+      return activeColor;
+    } else {
+      return inactiveColor;
+    }
+  };
+
   return (
     <Card>
       <CardHeader label="Deals by Rating" />
@@ -107,8 +135,25 @@ const CategoryCard = ({ chartData }: chartProps) => {
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            {/* <Legend /> */}
-            <Bar dataKey="dealCount" stackId="a" fill="#FF8042" />
+            <Bar
+              dataKey="dealCount"
+              stackId="a"
+              fill="#FF8042"
+              onClick={handleClick}>
+              {assembledData.map((entry, index) => {
+                return (
+                  <Cell
+                    cursor="pointer"
+                    fill={
+                      _.includes(filter.rating, entry.name)
+                        ? "#82ca9d"
+                        : "#8884d8"
+                    }
+                    key={`cell-${index}`}
+                  />
+                );
+              })}
+            </Bar>
             {/* <Bar dataKey="Fitch" stackId="a" fill="#8884d8" />
             <Bar dataKey="Kroll" stackId="a" fill="#82ca9d" />
             <Bar dataKey="Moody's" stackId="a" fill="#FFBB28" />

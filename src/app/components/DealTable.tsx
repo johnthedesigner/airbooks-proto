@@ -52,7 +52,7 @@ const DealTable = ({ dealData, maturityData }: tableProps) => {
               );
             })}
           </div>
-          {_.map(maturityData, (maturity: any, index: number) => {
+          {_.map(dealData, (deal: any, index: number) => {
             return (
               <div
                 key={index}
@@ -66,7 +66,7 @@ const DealTable = ({ dealData, maturityData }: tableProps) => {
                   return (
                     <div key={index} className={styles["table__cell--body"]}>
                       <span className={styles["table__text"]}>
-                        {maturity[columnName]}
+                        {deal[columnName]}
                       </span>
                     </div>
                   );
