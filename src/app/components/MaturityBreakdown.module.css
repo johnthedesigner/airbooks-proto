@@ -1,0 +1,5 @@
+.chart__wrapper {
+  flex: 1;
+  position: relative;
+  min-height: 50px;
+}

@@ -9,6 +9,15 @@
   overflow: scroll;
 }
 
+.table__row {
+  border-top: #dddddd solid 1px;
+  transition: all linear 0.1s;
+}
+
+.table__row:hover {
+  background: #eeeeee;
+}
+
 .table__cell--header,
 .table__cell--body {
   font-size: 0.75rem;

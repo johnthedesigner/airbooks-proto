@@ -20,7 +20,7 @@ const DealTable = ({ dealData, maturityData }: tableProps) => {
   ];
 
   var gridTemplate = "";
-  _.each(columns, () => {
+  _.times(columns.length + 1, () => {
     gridTemplate += "fit-content(100px) ";
   });
 
@@ -47,7 +47,7 @@ const DealTable = ({ dealData, maturityData }: tableProps) => {
             {_.map(columns, (columnName: string, index: number) => {
               return (
                 <div key={index} className={styles["table__cell--header"]}>
-                  {columnName}
+                  <span className={styles["table__text"]}>{columnName}</span>
                 </div>
               );
             })}

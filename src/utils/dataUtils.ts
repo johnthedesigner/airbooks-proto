@@ -92,6 +92,7 @@ export const prepareMaturities = (rawMaturitiesList: any[]) => {
 // Accept filter parameters and return updated filter object
 interface filterState {
   rating: any;
+  sector: any;
 }
 export const updateFilter = (filter: any, key: string, value: any) => {
   // Get the filter to be updated
@@ -116,12 +117,14 @@ export const applyMaturityFilters = (formattedMaturities: any, filter: any) => {
   return _(formattedMaturities)
     .filter((m: any) => {
       return (
+        // Ratings Filters
         _.includes(filter.rating, m.moodysNormal) ||
         _.includes(filter.rating, m.spNormal) ||
         _.includes(filter.rating, m.fitchNormal) ||
         _.includes(filter.rating, m.krollNormal) ||
-        filter.rating == undefined ||
-        filter.rating.length === 0
+        // Sector Filter
+        _.includes(filter.sector, m.Sector) ||
+        (filter.rating.length === 0 && filter.sector.length === 0)
       );
     })
     .value();

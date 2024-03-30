@@ -15,17 +15,20 @@ import Cell from "./components/Cell";
 import Card from "./components/Card";
 import styles from "./page.module.css";
 import DealTable from "./components/DealTable";
-import CategoryCard from "./components/CategoryCard";
+import RatingsCard from "./components/RatingsCard";
+import SectorCard from "./components/SectorCard";
 import MaturityBreakdown from "./components/MaturityBreakdown";
 
 interface filterState {
   rating: any;
+  sector: any;
 }
 
 export default function Home() {
   let formattedMaturities = prepareMaturities(maturityData);
   const [filter, setFilter] = useState<filterState>({
     rating: [],
+    sector: [],
   });
   const [filteredMaturities, setFilteredMaturities] = useState(new Array());
   const [filteredDeals, setFilteredDeals] = useState(new Array());
@@ -60,8 +63,8 @@ export default function Home() {
               <Row fr={1}>
                 <Column fr={1}>
                   <Cell>
-                    <CategoryCard
-                      chartData={maturityData}
+                    <RatingsCard
+                      chartData={dealData}
                       handleFilterUpdate={handleFilterUpdate}
                       filter={filter}
                     />
@@ -69,9 +72,11 @@ export default function Home() {
                 </Column>
                 <Column fr={1}>
                   <Cell>
-                    <Card>
-                      <p>Hello world.</p>
-                    </Card>
+                    <SectorCard
+                      chartData={dealData}
+                      handleFilterUpdate={handleFilterUpdate}
+                      filter={filter}
+                    />
                   </Cell>
                 </Column>
               </Row>

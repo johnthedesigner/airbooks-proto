@@ -14,7 +14,7 @@ import {
 
 import Card from "./Card";
 import CardHeader from "./CardHeader";
-import styles from "./CategoryCard.module.css";
+import styles from "./RatingsCard.module.css";
 import { mapRating } from "@/utils/dataUtils";
 
 interface chartProps {
@@ -23,11 +23,7 @@ interface chartProps {
   filter: any;
 }
 
-const CategoryCard = ({
-  chartData,
-  handleFilterUpdate,
-  filter,
-}: chartProps) => {
+const RatingsCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
   // Ratings categories
   const ratingsCategories = [
     "B-",
@@ -95,24 +91,6 @@ const CategoryCard = ({
     handleFilterUpdate("rating", data.name);
   };
 
-  const barColor = (
-    name: string,
-    filter: any,
-    activeColor: string,
-    inactiveColor: string
-  ) => {
-    // if this color is in the filter, or no filter exists use active color
-    if (
-      _.includes(filter.rating, name) ||
-      filter.rating === undefined ||
-      filter.rating.length === 0
-    ) {
-      return activeColor;
-    } else {
-      return inactiveColor;
-    }
-  };
-
   return (
     <Card>
       <CardHeader label="Deals by Rating" />
@@ -165,4 +143,4 @@ const CategoryCard = ({
   );
 };
 
-export default CategoryCard;
+export default RatingsCard;
