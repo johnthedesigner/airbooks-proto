@@ -75,6 +75,8 @@ const CategoryCard = ({ chartData }: chartProps) => {
     if (dealCountMoodys + dealCountSP + dealCountFitch + dealCountKroll != 0) {
       assembledData.push({
         name: ratingString,
+        dealCount:
+          dealCountMoodys + dealCountSP + dealCountFitch + dealCountKroll,
         "Moody's": dealCountMoodys,
         "Standard & Poor's": dealCountSP,
         Fitch: dealCountFitch,
@@ -87,26 +89,30 @@ const CategoryCard = ({ chartData }: chartProps) => {
     <Card>
       <CardHeader label="Deals by Rating" />
       <div className={styles["chart__wrapper"]}>
-        <ResponsiveContainer width="100%" height="100%" style={{ flex: 1 }}>
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          style={{ flex: 1, fontSize: ".75rem" }}>
           <BarChart
             width={500}
             height={300}
             data={assembledData}
             margin={{
               top: 20,
-              right: 30,
-              left: 20,
-              bottom: 5,
+              right: 20,
+              left: 0,
+              bottom: 0,
             }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Legend />
-            <Bar dataKey="Fitch" stackId="a" fill="#8884d8" />
+            {/* <Legend /> */}
+            <Bar dataKey="dealCount" stackId="a" fill="#FF8042" />
+            {/* <Bar dataKey="Fitch" stackId="a" fill="#8884d8" />
             <Bar dataKey="Kroll" stackId="a" fill="#82ca9d" />
             <Bar dataKey="Moody's" stackId="a" fill="#FFBB28" />
-            <Bar dataKey="Standard & Poor's" stackId="a" fill="#FF8042" />
+            <Bar dataKey="Standard & Poor's" stackId="a" fill="#FF8042" /> */}
           </BarChart>
         </ResponsiveContainer>
       </div>

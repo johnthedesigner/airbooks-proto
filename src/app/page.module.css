@@ -23,3 +23,15 @@
   flex-direction: column;
   padding: 0.5rem;
 }
+
+.body__nonscrolling-area {
+  height: 20rem;
+  min-height: 40vh;
+  display: flex;
+}
+
+.body__scrolling-area {
+  flex: 1;
+  display: flex;
+  overflow: auto;
+}
