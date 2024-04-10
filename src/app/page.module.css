@@ -28,10 +28,11 @@
   height: 20rem;
   min-height: 40vh;
   display: flex;
+  flex-direction: column;
+  border-bottom: #999 solid 1px;
 }
 
 .body__scrolling-area {
-  flex: 1;
   display: flex;
   overflow: auto;
 }
@@ -40,6 +41,6 @@
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  padding: 0.5rem;
+  padding: 0 0.5rem 0.5rem;
   align-items: flex-end;
 }

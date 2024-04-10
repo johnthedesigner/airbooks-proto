@@ -68,7 +68,6 @@ export const mapRating = (rating: string) => {
 
 // Normalize certain fields for easier use in the UI
 export const mapRatings = (rawMaturitiesList: any[]) => {
-  console.log("MATURITIES LIST", rawMaturitiesList);
   return _.map(rawMaturitiesList, (maturity: any, index: number) => {
     let moodysNormal = mapRating(maturity["Moody's"]);
     let spNormal = mapRating(maturity["Standard & Poor's"]);

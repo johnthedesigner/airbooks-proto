@@ -33,7 +33,6 @@ export default function Home() {
 
   // map rating data into consistent categories
   let preparedDeals = mapRatings(dealData);
-  console.log(dealData, preparedDeals);
 
   useEffect(() => {
     // Get freshly filtered deals and maturities when filter is updated
@@ -80,51 +79,65 @@ export default function Home() {
               // width={300}
               handleFilterUpdate={handleFilterUpdate}
             />
+            <FilterSelect
+              filter={filter}
+              filterType="state"
+              handleFilterUpdate={handleFilterUpdate}
+            />
+            <FilterSelect
+              filter={filter}
+              filterType="taxStatus"
+              handleFilterUpdate={handleFilterUpdate}
+            />
           </div>
           <div className={styles["body__nonscrolling-area"]}>
-            <Cell>
-              <DealTable dealData={filteredDeals} />
-            </Cell>
+            <Row fr={2}>
+              <Cell>
+                <DealTable dealData={filteredDeals} />
+              </Cell>
+            </Row>
+            <Row fr={1}>
+              <Cell>
+                <MaturityBreakdown chartData={filteredMaturities} />
+              </Cell>
+            </Row>
           </div>
           <div className={styles["body__scrolling-area"]}>
             <Column fr={1}>
-              <Row fr={4}>
-                <Column fr={3}>
+              <Row fr={1}>
+                <Column fr={2}>
                   <Row fr={1}>
-                    <Cell>
-                      <RatingsCard
-                        chartData={dealData}
-                        handleFilterUpdate={handleToggleFilterValue}
-                        filter={filter}
-                      />
-                    </Cell>
+                    <Column fr={1}>
+                      <Cell>
+                        <RatingsCard
+                          chartData={preparedDeals}
+                          handleFilterUpdate={handleToggleFilterValue}
+                          filter={filter}
+                        />
+                      </Cell>
+                    </Column>
                   </Row>
                   <Row fr={1}>
-                    <Cell>
-                      <SectorCard
-                        chartData={dealData}
-                        handleFilterUpdate={handleToggleFilterValue}
-                        filter={filter}
-                      />
-                    </Cell>
+                    <Column fr={1}>
+                      <Cell>
+                        <SectorCard
+                          chartData={preparedDeals}
+                          handleFilterUpdate={handleToggleFilterValue}
+                          filter={filter}
+                        />
+                      </Cell>
+                    </Column>
                   </Row>
                 </Column>
                 <Column fr={1}>
-                  <Row fr={1}>
-                    <Cell>
-                      <MapCard
-                        chartData={filteredDeals}
-                        handleFilterUpdate={handleToggleFilterValue}
-                        filter={filter}
-                      />
-                    </Cell>
-                  </Row>
+                  <Cell>
+                    <MapCard
+                      chartData={filteredDeals}
+                      handleFilterUpdate={handleToggleFilterValue}
+                      filter={filter}
+                    />
+                  </Cell>
                 </Column>
-              </Row>
-              <Row fr={1}>
-                <Cell>
-                  <MaturityBreakdown chartData={filteredMaturities} />
-                </Cell>
               </Row>
             </Column>
           </div>

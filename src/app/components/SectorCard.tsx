@@ -28,15 +28,32 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
   const dealsFromData = _.countBy(chartData, (deal: any, index: number) => {
     return deal["Sector"];
   });
-  const sectors = _.keys(dealsFromData);
+
+  // Sum par amount by sector
+  let parTotalsBySector = _.reduce(
+    chartData,
+    (result: any, value: any) => {
+      // Get current sector
+      let sector = value["Sector"];
+      // Make sure we have a result object and property to start with
+      result || (result = {});
+      if (!result[sector]) result[sector] = 0;
+      // Add up the par amounts to get a total by rating
+      result[sector] = Number(result[sector]) + Number(value["Par ($M)"]);
+      return result;
+    },
+    {}
+  );
+
+  const sectors = _.keys(parTotalsBySector);
   let assembledData = _.orderBy(
     _.map(sectors, (sector: string) => {
       return {
         name: sector,
-        dealCount: dealsFromData[sector],
+        par: parTotalsBySector[sector],
       };
     }),
-    "dealCount",
+    "par",
     "desc"
   );
 
@@ -46,7 +63,7 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
 
   return (
     <Card>
-      <CardHeader label="Deals by Sector" />
+      <CardHeader label="Total Par by Sector" />
       <div className={styles["chart__wrapper"]}>
         <ResponsiveContainer
           width="100%"
@@ -71,11 +88,7 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
               }}></XAxis>
             <YAxis />
             <Tooltip />
-            <Bar
-              dataKey="dealCount"
-              stackId="a"
-              fill="#FF8042"
-              onClick={handleClick}>
+            <Bar dataKey="par" stackId="a" fill="#FF8042" onClick={handleClick}>
               {assembledData.map((entry, index) => {
                 return (
                   <Cell

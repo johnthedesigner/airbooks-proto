@@ -71,7 +71,6 @@ const DealTable = ({ dealData }: tableProps) => {
                 }}>
                 {_.map(columns, (columnName: string, index: number) => {
                   if (columnName === "rating") {
-                    console.log("CHECK DEAL", deal);
                     return (
                       <div key={index} className={styles["table__cell--body"]}>
                         <span className={styles["table__text"]}>

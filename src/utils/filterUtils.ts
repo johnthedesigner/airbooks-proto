@@ -1,15 +1,20 @@
 import _ from "lodash";
+import { singleValue } from "./dataUtils";
 
 // Initial filter state
 export const filterState = {
   rating: [],
   sector: [],
+  state: [],
+  taxStatus: [],
 };
 
 // Interface for managing filter state
 export interface filterStateInterface {
   rating?: string[];
   sector?: string[];
+  state?: string[];
+  taxStatus?: string[];
 }
 
 export interface filterItemInterface {
@@ -21,6 +26,8 @@ export interface filterItemInterface {
 export interface filterListInterface {
   [rating: string]: filterItemInterface;
   sector: filterItemInterface;
+  state: filterItemInterface;
+  taxStatus: filterItemInterface;
 }
 
 export const filterList: filterListInterface = {
@@ -37,6 +44,71 @@ export const filterList: filterListInterface = {
       { label: "AA", value: "AA" },
       { label: "AA+", value: "AA+" },
       { label: "AAA", value: "AAA" },
+    ],
+  },
+  state: {
+    label: "State",
+    key: "state",
+    options: [
+      { value: "AL", label: "Alabama" },
+      { value: "AK", label: "Alaska" },
+      { value: "AS", label: "American Samoa" },
+      { value: "AZ", label: "Arizona" },
+      { value: "AR", label: "Arkansas" },
+      { value: "CA", label: "California" },
+      { value: "CO", label: "Colorado" },
+      { value: "CT", label: "Connecticut" },
+      { value: "DE", label: "Delaware" },
+      { value: "DC", label: "District Of Columbia" },
+      { value: "FM", label: "Federated States Of Micronesia" },
+      { value: "FL", label: "Florida" },
+      { value: "GA", label: "Georgia" },
+      { value: "GU", label: "Guam" },
+      { value: "HI", label: "Hawaii" },
+      { value: "ID", label: "Idaho" },
+      { value: "IL", label: "Illinois" },
+      { value: "IN", label: "Indiana" },
+      { value: "IA", label: "Iowa" },
+      { value: "KS", label: "Kansas" },
+      { value: "KY", label: "Kentucky" },
+      { value: "LA", label: "Louisiana" },
+      { value: "ME", label: "Maine" },
+      { value: "MH", label: "Marshall Islands" },
+      { value: "MD", label: "Maryland" },
+      { value: "MA", label: "Massachusetts" },
+      { value: "MI", label: "Michigan" },
+      { value: "MN", label: "Minnesota" },
+      { value: "MS", label: "Mississippi" },
+      { value: "MO", label: "Missouri" },
+      { value: "MT", label: "Montana" },
+      { value: "NE", label: "Nebraska" },
+      { value: "NV", label: "Nevada" },
+      { value: "NH", label: "New Hampshire" },
+      { value: "NJ", label: "New Jersey" },
+      { value: "NM", label: "New Mexico" },
+      { value: "NY", label: "New York" },
+      { value: "NC", label: "North Carolina" },
+      { value: "ND", label: "North Dakota" },
+      { value: "MP", label: "Northern Mariana Islands" },
+      { value: "OH", label: "Ohio" },
+      { value: "OK", label: "Oklahoma" },
+      { value: "OR", label: "Oregon" },
+      { value: "PW", label: "Palau" },
+      { value: "PA", label: "Pennsylvania" },
+      { value: "PR", label: "Puerto Rico" },
+      { value: "RI", label: "Rhode Island" },
+      { value: "SC", label: "South Carolina" },
+      { value: "SD", label: "South Dakota" },
+      { value: "TN", label: "Tennessee" },
+      { value: "TX", label: "Texas" },
+      { value: "UT", label: "Utah" },
+      { value: "VT", label: "Vermont" },
+      { value: "VI", label: "Virgin Islands" },
+      { value: "VA", label: "Virginia" },
+      { value: "WA", label: "Washington" },
+      { value: "WV", label: "West Virginia" },
+      { value: "WI", label: "Wisconsin" },
+      { value: "WY", label: "Wyoming" },
     ],
   },
   sector: {
@@ -67,6 +139,15 @@ export const filterList: filterListInterface = {
         label: "General Purposes, Transportation",
         value: "General Purposes, Transportation",
       },
+    ],
+  },
+  taxStatus: {
+    label: "Tax Status",
+    key: "taxStatus",
+    options: [
+      { label: "T-E", value: "T-E" },
+      { label: "Tax", value: "Tax" },
+      { label: "AMT", value: "AMT" },
     ],
   },
 };
@@ -101,19 +182,24 @@ export const applyDealFilters = (deals: any, filter: any) => {
   let filteredDeals = _(deals)
     .filter((m: any) => {
       return (
-        (filter.rating.length === 0 && filter.sector.length === 0) ||
+        (filter.rating.length === 0 &&
+          filter.sector.length === 0 &&
+          filter.state.length === 0 &&
+          filter.taxStatus.length === 0) ||
         // Ratings Filters
-        _.includes(filter.rating, m.moodysNormal) ||
-        _.includes(filter.rating, m.spNormal) ||
-        _.includes(filter.rating, m.fitchNormal) ||
-        _.includes(filter.rating, m.krollNormal) ||
+        _.includes(filter.rating, singleValue(m.moodysNormal)) ||
+        _.includes(filter.rating, singleValue(m.spNormal)) ||
+        _.includes(filter.rating, singleValue(m.fitchNormal)) ||
+        _.includes(filter.rating, singleValue(m.krollNormal)) ||
         // Sector Filter
-        _.includes(filter.sector, m.Sector)
+        _.includes(filter.sector, singleValue(m.Sector)) ||
+        // State Filter
+        _.includes(filter.state, singleValue(m.State)) ||
+        // Tax Status Filter
+        _.includes(filter.taxStatus, singleValue(m["Tax Status"]))
       );
     })
     .value();
-
-  console.log("FILTERED DEALS", deals, filteredDeals);
 
   return filteredDeals;
 };

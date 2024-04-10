@@ -26,64 +26,58 @@ interface chartProps {
 const RatingsCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
   // Ratings categories
   const ratingsCategories = [
-    "B-",
-    "B",
-    "B+",
-    "BB-",
-    "BB",
-    "BB+",
-    "BBB-",
-    "BBB",
-    "BBB+",
-    "A-",
-    "A",
-    "A+",
-    "AA-",
-    "AA",
-    "AA+",
     "AAA",
+    "AA+",
+    "AA",
+    "AA-",
+    "A+",
+    "A",
+    "A-",
+    "BBB+",
+    "BBB",
+    "BBB-",
+    "BB+",
+    "BB",
+    "BB-",
+    "B+",
+    "B",
+    "B-",
     "null",
   ];
 
-  // Get mapped ratings from each source
-  const moodysRatings = _.countBy(chartData, (maturity: any) => {
-    return mapRating(maturity["Moody's"]);
-  });
-  const spRatings = _.countBy(chartData, (maturity: any) => {
-    return mapRating(maturity["Standard & Poor's"]);
-  });
-  const fitchRatings = _.countBy(chartData, (maturity: any) => {
-    return mapRating(maturity["Fitch"]);
-  });
-  const krollRatings = _.countBy(chartData, (maturity: any) => {
-    return mapRating(maturity["Kroll"]);
-  });
-
+  // Get object of ratings with corresponding par totals
+  const ratingsReduce = (chartData: any[], ratingKey: string) => {
+    let parTotals = _.reduce(
+      chartData,
+      (result: any, value: any) => {
+        // Make sure we have a result object and property to start with
+        result || (result = {});
+        if (!result[value[ratingKey]]) result[value[ratingKey]] = 0;
+        // Add up the par amounts to get a total by rating
+        result[value[ratingKey]] =
+          Number(result[value[ratingKey]]) + Number(value["Par ($M)"]);
+        return result;
+      },
+      {}
+    );
+    return parTotals;
+  };
+  // Par totals for each rating body
+  let moodysParTotals = ratingsReduce(chartData, "moodysNormal");
+  let spParTotals = ratingsReduce(chartData, "spNormal");
+  let fitchParTotals = ratingsReduce(chartData, "fitchNormal");
+  let krollParTotals = ratingsReduce(chartData, "krollNormal");
+  // Grand total (with overlap) of par totals by rating
   var assembledData = new Array();
-  _.each(ratingsCategories, (ratingString: string, index: number) => {
-    // Count # of deals by each rating body
-    let dealCountMoodys = moodysRatings[ratingString]
-      ? moodysRatings[ratingString]
-      : 0;
-    let dealCountSP = spRatings[ratingString] ? spRatings[ratingString] : 0;
-    let dealCountFitch = fitchRatings[ratingString]
-      ? fitchRatings[ratingString]
-      : 0;
-    let dealCountKroll = krollRatings[ratingString]
-      ? krollRatings[ratingString]
-      : 0;
-    // Only return non-empty rating categories
-    // if (dealCountMoodys + dealCountSP + dealCountFitch + dealCountKroll != 0) {
+  _.each(ratingsCategories, (rating: string) => {
     assembledData.push({
-      name: ratingString,
-      dealCount:
-        dealCountMoodys + dealCountSP + dealCountFitch + dealCountKroll,
-      "Moody's": dealCountMoodys,
-      "Standard & Poor's": dealCountSP,
-      Fitch: dealCountFitch,
-      Kroll: dealCountKroll,
+      name: rating,
+      value:
+        (moodysParTotals[rating] || 0) +
+        (spParTotals[rating] || 0) +
+        (fitchParTotals[rating] || 0) +
+        (krollParTotals[rating] || 0),
     });
-    // }
   });
 
   const handleClick = (data: any, index: number) => {
@@ -93,7 +87,7 @@ const RatingsCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
 
   return (
     <Card>
-      <CardHeader label="Deals by Rating" />
+      <CardHeader label="Total Par by Rating" />
       <div className={styles["chart__wrapper"]}>
         <ResponsiveContainer
           width="100%"
@@ -114,7 +108,7 @@ const RatingsCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
             <YAxis />
             <Tooltip />
             <Bar
-              dataKey="dealCount"
+              dataKey="value"
               stackId="a"
               fill="#FF8042"
               onClick={handleClick}>

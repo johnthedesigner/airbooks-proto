@@ -1,5 +1,5 @@
 .row {
   display: flex;
   flex-direction: row;
-  min-height: 10rem;
+  height: fit-content;
 }

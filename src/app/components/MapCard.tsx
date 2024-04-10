@@ -17,16 +17,36 @@ interface chartProps {
 }
 
 const MapCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
-  const dataByState = _.countBy(chartData, (deal: any) => {
-    return deal["State"];
-  });
-  const assembledData = _.map(dataByState, (value: any, abbrev: string) => {
-    return {
-      abbrev,
-      state: stateNameFromAbbrev(abbrev),
-      dealCount: value,
-    };
-  });
+  // const dataByState = _.countBy(chartData, (deal: any) => {
+  //   return deal["State"];
+  // });
+  // Sum par amount by state
+  let parTotalsByState = _.reduce(
+    chartData,
+    (result: any, value: any) => {
+      // Get current state
+      let state = value["State"];
+      // Make sure we have a result object and property to start with
+      result || (result = {});
+      if (!result[state]) result[state] = 0;
+      // Add up the par amounts to get a total by rating
+      result[state] = Number(result[state]) + Number(value["Par ($M)"]);
+      return result;
+    },
+    {}
+  );
+  console.log("CHECK PAR BY STATE", parTotalsByState);
+
+  const assembledData = _.map(
+    parTotalsByState,
+    (value: any, abbrev: string) => {
+      return {
+        abbrev,
+        state: stateNameFromAbbrev(abbrev),
+        dealCount: value,
+      };
+    }
+  );
 
   const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
