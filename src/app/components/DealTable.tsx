@@ -17,6 +17,7 @@ const DealTable = ({ dealData, maturityData }: tableProps) => {
     "Par ($M)",
     "State",
     "Tax Status",
+    "Rating",
   ];
 
   var gridTemplate = "";
@@ -63,13 +64,24 @@ const DealTable = ({ dealData, maturityData }: tableProps) => {
                   gridColumn: `1/${columns.length + 1}`,
                 }}>
                 {_.map(columns, (columnName: string, index: number) => {
-                  return (
-                    <div key={index} className={styles["table__cell--body"]}>
-                      <span className={styles["table__text"]}>
-                        {deal[columnName]}
-                      </span>
-                    </div>
-                  );
+                  if (columnName === "rating") {
+                    return (
+                      <div key={index} className={styles["table__cell--body"]}>
+                        <span className={styles["table__text"]}>
+                          {deal.moodysNormal}|{deal.spNormal}|{deal.fitchNormal}
+                          |{deal.krollNormal}
+                        </span>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div key={index} className={styles["table__cell--body"]}>
+                        <span className={styles["table__text"]}>
+                          {deal[columnName]}
+                        </span>
+                      </div>
+                    );
+                  }
                 })}
               </div>
             );
