@@ -12,6 +12,7 @@
 .table__row {
   border-top: #dddddd solid 1px;
   transition: all linear 0.1s;
+  min-width: 100%;
 }
 
 .table__row:hover {

@@ -33,7 +33,7 @@ const DealTable = ({ dealData, maturityData }: tableProps) => {
           style={{
             display: "grid",
             gridTemplateColumns: gridTemplate,
-            gridTemplateRows: `repeat(${maturityData.length}, 1fr)`,
+            gridTemplateRows: `repeat(${dealData.length}, 1fr)`,
             gridColumnGap: "0px",
             gridRowGap: "0px",
           }}>

@@ -15,7 +15,7 @@ import {
 import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./RatingsCard.module.css";
-import { mapRating } from "@/utils/dataUtils";
+import { mapRating } from "@/utils/ratingUtils";
 
 interface chartProps {
   chartData: any;

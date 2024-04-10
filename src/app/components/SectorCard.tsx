@@ -15,7 +15,6 @@ import {
 import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./RatingsCard.module.css";
-import { mapRating } from "@/utils/dataUtils";
 
 interface chartProps {
   chartData: any;
@@ -29,12 +28,16 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
     return deal["Sector"];
   });
   const sectors = _.keys(dealsFromData);
-  let assembledData = _.map(sectors, (sector: string) => {
-    return {
-      name: sector,
-      dealCount: dealsFromData[sector],
-    };
-  });
+  let assembledData = _.orderBy(
+    _.map(sectors, (sector: string) => {
+      return {
+        name: sector,
+        dealCount: dealsFromData[sector],
+      };
+    }),
+    "dealCount",
+    "desc"
+  );
 
   const handleClick = (data: any, index: number) => {
     console.log("BAR CLICKED", data, index);
@@ -53,6 +56,7 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
             width={500}
             height={300}
             data={assembledData}
+            layout="horizontal"
             margin={{
               top: 20,
               right: 20,

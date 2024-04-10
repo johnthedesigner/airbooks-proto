@@ -5,10 +5,14 @@ import _ from "lodash";
 import dealData from "../data/deals.json";
 import maturityData from "../data/maturities.json";
 import {
-  applyMaturityFilters,
-  prepareMaturities,
+  applyFilters,
   updateFilter,
-} from "@/utils/dataUtils";
+  substituteFilter,
+  filterList,
+  filterState,
+  filterStateInterface,
+  filterItemInterface,
+} from "@/utils/filterUtils";
 import Row from "./components/Row";
 import Column from "./components/Column";
 import Cell from "./components/Cell";
@@ -18,31 +22,43 @@ import DealTable from "./components/DealTable";
 import RatingsCard from "./components/RatingsCard";
 import SectorCard from "./components/SectorCard";
 import MaturityBreakdown from "./components/MaturityBreakdown";
-
-interface filterState {
-  rating: any;
-  sector: any;
-}
+import { mapRatings } from "@/utils/ratingUtils";
+import FilterSelect from "./components/filter/FilterSelect";
+import { Button } from "@mui/joy";
+import MapCard from "./components/MapCard";
 
 export default function Home() {
-  let formattedMaturities = prepareMaturities(maturityData);
-  const [filter, setFilter] = useState<filterState>({
-    rating: [],
-    sector: [],
-  });
+  const [filter, setFilter] = useState<filterStateInterface>(filterState);
   const [filteredMaturities, setFilteredMaturities] = useState(new Array());
   const [filteredDeals, setFilteredDeals] = useState(new Array());
 
+  // map rating data into consistent categories
+  let preparedDeals = mapRatings(maturityData);
+
   useEffect(() => {
-    let maturityFilterOutput = applyMaturityFilters(
-      formattedMaturities,
-      filter
-    );
-    setFilteredMaturities(maturityFilterOutput);
+    // Get freshly filtered deals and maturities when filter is updated
+    const getFilteredData = async () => {
+      let filteredData = await applyFilters(
+        preparedDeals,
+        maturityData,
+        filter
+      );
+      setFilteredDeals(filteredData.deals);
+      setFilteredMaturities(filteredData.maturities);
+    };
+    getFilteredData();
   }, [filter]);
 
   const handleFilterUpdate = (key: string, value: any) => {
+    setFilter(substituteFilter(filter, key, value));
+  };
+
+  const handleToggleFilterValue = (key: string, value: any) => {
     setFilter(updateFilter(filter, key, value));
+  };
+
+  const resetFilter = () => {
+    setFilter(filterState);
   };
 
   return (
@@ -50,6 +66,21 @@ export default function Home() {
       <div className={styles.header} />
       <div className={styles.body}>
         <div className={styles["body__content"]}>
+          <div className={styles["body__filter-bar"]}>
+            <Button onClick={resetFilter}>Reset Filter</Button>
+            <FilterSelect
+              filter={filter}
+              filterType="rating"
+              // width={200}
+              handleFilterUpdate={handleFilterUpdate}
+            />
+            <FilterSelect
+              filter={filter}
+              filterType="sector"
+              // width={300}
+              handleFilterUpdate={handleFilterUpdate}
+            />
+          </div>
           <div className={styles["body__nonscrolling-area"]}>
             <Cell>
               <DealTable
@@ -65,7 +96,7 @@ export default function Home() {
                   <Cell>
                     <RatingsCard
                       chartData={dealData}
-                      handleFilterUpdate={handleFilterUpdate}
+                      handleFilterUpdate={handleToggleFilterValue}
                       filter={filter}
                     />
                   </Cell>
@@ -74,7 +105,16 @@ export default function Home() {
                   <Cell>
                     <SectorCard
                       chartData={dealData}
-                      handleFilterUpdate={handleFilterUpdate}
+                      handleFilterUpdate={handleToggleFilterValue}
+                      filter={filter}
+                    />
+                  </Cell>
+                </Column>
+                <Column fr={1}>
+                  <Cell>
+                    <MapCard
+                      chartData={filteredDeals}
+                      handleFilterUpdate={handleToggleFilterValue}
                       filter={filter}
                     />
                   </Cell>
@@ -86,23 +126,6 @@ export default function Home() {
                     <MaturityBreakdown chartData={filteredMaturities} />
                   </Cell>
                 </Column>
-              </Row>
-              <Row fr={1}>
-                <Cell>
-                  <Card>
-                    <p>Hello world.</p>
-                  </Card>
-                </Cell>
-                <Cell>
-                  <Card>
-                    <p>Hello world.</p>
-                  </Card>
-                </Cell>
-                <Cell>
-                  <Card>
-                    <p>Hello world.</p>
-                  </Card>
-                </Cell>
               </Row>
             </Column>
           </div>

@@ -35,3 +35,11 @@
   display: flex;
   overflow: auto;
 }
+
+.body__filter-bar {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  padding: 0.5rem;
+  align-items: flex-end;
+}
