@@ -32,6 +32,7 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
     _.map(sectors, (sector: string) => {
       return {
         name: sector,
+        abbrev: sector.substring(0, 5),
         dealCount: dealsFromData[sector],
       };
     }),
@@ -64,7 +65,7 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
               bottom: 0,
             }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
+            <XAxis dataKey="abbrev" />
             <YAxis />
             <Tooltip />
             <Bar
