@@ -73,17 +73,17 @@ const RatingsCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
       ? krollRatings[ratingString]
       : 0;
     // Only return non-empty rating categories
-    if (dealCountMoodys + dealCountSP + dealCountFitch + dealCountKroll != 0) {
-      assembledData.push({
-        name: ratingString,
-        dealCount:
-          dealCountMoodys + dealCountSP + dealCountFitch + dealCountKroll,
-        "Moody's": dealCountMoodys,
-        "Standard & Poor's": dealCountSP,
-        Fitch: dealCountFitch,
-        Kroll: dealCountKroll,
-      });
-    }
+    // if (dealCountMoodys + dealCountSP + dealCountFitch + dealCountKroll != 0) {
+    assembledData.push({
+      name: ratingString,
+      dealCount:
+        dealCountMoodys + dealCountSP + dealCountFitch + dealCountKroll,
+      "Moody's": dealCountMoodys,
+      "Standard & Poor's": dealCountSP,
+      Fitch: dealCountFitch,
+      Kroll: dealCountKroll,
+    });
+    // }
   });
 
   const handleClick = (data: any, index: number) => {

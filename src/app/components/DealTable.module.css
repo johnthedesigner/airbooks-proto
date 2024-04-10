@@ -9,6 +9,12 @@
   overflow: scroll;
 }
 
+.table__header {
+  position: sticky;
+  top: 0;
+  background: white;
+}
+
 .table__row {
   border-top: #dddddd solid 1px;
   transition: all linear 0.1s;
