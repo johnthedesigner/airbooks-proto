@@ -72,7 +72,7 @@ const MapCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
 
   return (
     <Card>
-      <CardHeader label="Deals by State" />
+      <CardHeader label="Total Par by State ($M)" />
       <div className={styles["chart__wrapper"]}>
         <ComposableMap projection="geoAlbersUsa">
           <Geographies geography={geoUrl}>

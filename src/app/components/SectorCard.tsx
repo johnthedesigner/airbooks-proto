@@ -63,7 +63,7 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
 
   return (
     <Card>
-      <CardHeader label="Total Par by Sector" />
+      <CardHeader label="Total Par by Sector ($M)" />
       <div className={styles["chart__wrapper"]}>
         <ResponsiveContainer
           width="100%"
@@ -77,7 +77,7 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
             margin={{
               top: 20,
               right: 20,
-              left: 0,
+              left: 20,
               bottom: 0,
             }}>
             <CartesianGrid strokeDasharray="3 3" />

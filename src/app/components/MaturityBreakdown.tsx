@@ -54,7 +54,7 @@ const MaturityBreakdown = ({ chartData }: chartProps) => {
 
   return (
     <Card>
-      <CardHeader label="Deals by Maturity" />
+      <CardHeader label="Total Par by Maturity ($M)" />
       <div className={styles["chart__wrapper"]}>
         <ResponsiveContainer
           width="100%"
@@ -67,7 +67,7 @@ const MaturityBreakdown = ({ chartData }: chartProps) => {
             margin={{
               top: 20,
               right: 20,
-              left: 0,
+              left: 20,
               bottom: 0,
             }}>
             <CartesianGrid strokeDasharray="3 3" />
