@@ -74,7 +74,7 @@ const MapCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
                     }}
                     key={geo.rsmKey}
                     geography={geo}
-                    fill={cur ? colorScale(cur.dealCount) : "#EEE"}
+                    fill={cur ? (colorScale(cur.dealCount) as string) : "#EEE"}
                   />
                 );
               })
