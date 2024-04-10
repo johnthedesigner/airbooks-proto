@@ -21,7 +21,6 @@ const MapCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
     return deal["State"];
   });
   const assembledData = _.map(dataByState, (value: any, abbrev: string) => {
-    console.log("CHECK ASSEMBLED VALUES", abbrev, value);
     return {
       abbrev,
       state: stateNameFromAbbrev(abbrev),
@@ -35,7 +34,6 @@ const MapCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
   const colorScale = scaleQuantile<string, number>()
     .domain(
       assembledData.map((d) => {
-        console.log("CHECK DOMAIN ITEM", d.dealCount);
         return d.dealCount;
       })
     )
@@ -52,7 +50,6 @@ const MapCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
     ]);
 
   const handleClick = (data: any, index: number) => {
-    console.log("BAR CLICKED", data, index);
     handleFilterUpdate("rating", data.name);
   };
 
@@ -70,7 +67,7 @@ const MapCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
                 return (
                   <Geography
                     onClick={(e: any) => {
-                      console.log(e);
+                      //   console.log(e);
                     }}
                     key={geo.rsmKey}
                     geography={geo}
