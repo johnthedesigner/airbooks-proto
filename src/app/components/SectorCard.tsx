@@ -5,6 +5,7 @@ import {
   BarChart,
   Bar,
   Cell,
+  Label,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -32,7 +33,6 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
     _.map(sectors, (sector: string) => {
       return {
         name: sector,
-        abbrev: sector.substring(0, 5),
         dealCount: dealsFromData[sector],
       };
     }),
@@ -41,13 +41,12 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
   );
 
   const handleClick = (data: any, index: number) => {
-    console.log("BAR CLICKED", data, index);
     handleFilterUpdate("sector", data.name);
   };
 
   return (
     <Card>
-      <CardHeader label="Deals by Rating" />
+      <CardHeader label="Deals by Sector" />
       <div className={styles["chart__wrapper"]}>
         <ResponsiveContainer
           width="100%"
@@ -65,7 +64,11 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
               bottom: 0,
             }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="abbrev" />
+            <XAxis
+              dataKey="name"
+              tickFormatter={(value: any, index: number) => {
+                return value.substring(0, 5);
+              }}></XAxis>
             <YAxis />
             <Tooltip />
             <Bar

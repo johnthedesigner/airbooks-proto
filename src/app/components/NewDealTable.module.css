@@ -1,0 +1,26 @@
+.table__wrapper {
+  position: relative;
+  flex: 1;
+  overflow: auto;
+}
+
+.table {
+  border-collapse: collapse;
+}
+
+.table__header {
+  position: sticky;
+  top: 0;
+  background: white;
+  border-bottom: #ddd solid 2px;
+  box-sizing: border-box;
+  font-weight: 600;
+}
+
+.table__text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 300px;
+  justify-self: stretch;
+}

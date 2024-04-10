@@ -1,7 +1,9 @@
 .card-header {
   padding: 0.25rem 1rem;
-  background: #dddddd;
+  background: #eeeeee;
   border-bottom: #cccccc solid 1px;
+  border-radius: 0.25rem 0.25rem 0 0;
+  color: #444444;
   font-size: 0.75rem;
   font-weight: bold;
 }

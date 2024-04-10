@@ -16,7 +16,6 @@ import {
 import Row from "./components/Row";
 import Column from "./components/Column";
 import Cell from "./components/Cell";
-import Card from "./components/Card";
 import styles from "./page.module.css";
 import DealTable from "./components/DealTable";
 import RatingsCard from "./components/RatingsCard";
@@ -33,7 +32,8 @@ export default function Home() {
   const [filteredDeals, setFilteredDeals] = useState(new Array());
 
   // map rating data into consistent categories
-  let preparedDeals = mapRatings(maturityData);
+  let preparedDeals = mapRatings(dealData);
+  console.log(dealData, preparedDeals);
 
   useEffect(() => {
     // Get freshly filtered deals and maturities when filter is updated
@@ -83,10 +83,7 @@ export default function Home() {
           </div>
           <div className={styles["body__nonscrolling-area"]}>
             <Cell>
-              <DealTable
-                dealData={filteredDeals}
-                maturityData={filteredMaturities}
-              />
+              <DealTable dealData={filteredDeals} />
             </Cell>
           </div>
           <div className={styles["body__scrolling-area"]}>

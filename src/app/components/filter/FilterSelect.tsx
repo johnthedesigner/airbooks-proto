@@ -18,8 +18,6 @@ const FilterSelect = ({
   width,
   handleFilterUpdate,
 }: filterProps) => {
-  console.log("CHECK RATING FILTER", filter[filterType]);
-
   const handleChange = (e: any, value: any) => {
     e.persist();
     handleFilterUpdate(filterType, value);

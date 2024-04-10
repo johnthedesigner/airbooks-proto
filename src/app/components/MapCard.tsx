@@ -27,7 +27,6 @@ const MapCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
       dealCount: value,
     };
   });
-  console.log("CHECK MAPPED DATA", chartData, dataByState, assembledData);
 
   const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
@@ -38,8 +37,6 @@ const MapCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
       })
     )
     .range([
-      "#ffedea",
-      "#ffcec5",
       "#ffad9f",
       "#ff8a75",
       "#ff5533",
@@ -67,7 +64,7 @@ const MapCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
                 return (
                   <Geography
                     onClick={(e: any) => {
-                      //   console.log(e);
+                      console.log(e);
                     }}
                     key={geo.rsmKey}
                     geography={geo}

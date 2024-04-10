@@ -3,13 +3,13 @@ import _ from "lodash";
 import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./DealTable.module.css";
+import { singleValue } from "@/utils/dataUtils";
 
 interface tableProps {
   dealData: any;
-  maturityData: any;
 }
 
-const DealTable = ({ dealData, maturityData }: tableProps) => {
+const DealTable = ({ dealData }: tableProps) => {
   const columns = [
     "Date",
     "Issuer",
@@ -21,9 +21,10 @@ const DealTable = ({ dealData, maturityData }: tableProps) => {
   ];
 
   var gridTemplate = "";
-  _.times(columns.length + 1, () => {
+  _.times(columns.length, () => {
     gridTemplate += "fit-content(100px) ";
   });
+  gridTemplate += "auto";
 
   return (
     <Card>
@@ -34,16 +35,19 @@ const DealTable = ({ dealData, maturityData }: tableProps) => {
           style={{
             display: "grid",
             gridTemplateColumns: gridTemplate,
-            gridTemplateRows: `repeat(${dealData.length}, 1fr)`,
+            gridTemplateRows: `repeat(${
+              dealData.length + 1
+            }, fit-content(2rem))`,
             gridColumnGap: "0px",
             gridRowGap: "0px",
+            padding: ".5rem",
           }}>
           <div
             className={styles["table__header"]}
             style={{
               display: "grid",
               gridTemplateColumns: "subgrid",
-              gridColumn: `1/${columns.length + 1}`,
+              gridColumn: `1/${columns.length + 2}`,
             }}>
             {_.map(columns, (columnName: string, index: number) => {
               return (
@@ -52,6 +56,7 @@ const DealTable = ({ dealData, maturityData }: tableProps) => {
                 </div>
               );
             })}
+            <div className={styles["table__cell--header"]} />
           </div>
           {_.map(dealData, (deal: any, index: number) => {
             return (
@@ -61,10 +66,12 @@ const DealTable = ({ dealData, maturityData }: tableProps) => {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "subgrid",
-                  gridColumn: `1/${columns.length + 1}`,
+                  gridColumn: `1/${columns.length + 2}`,
+                  padding: ".25rem",
                 }}>
                 {_.map(columns, (columnName: string, index: number) => {
                   if (columnName === "rating") {
+                    console.log("CHECK DEAL", deal);
                     return (
                       <div key={index} className={styles["table__cell--body"]}>
                         <span className={styles["table__text"]}>
@@ -74,15 +81,17 @@ const DealTable = ({ dealData, maturityData }: tableProps) => {
                       </div>
                     );
                   } else {
+                    // For regular plain-text cell content
                     return (
                       <div key={index} className={styles["table__cell--body"]}>
                         <span className={styles["table__text"]}>
-                          {deal[columnName]}
+                          {singleValue(deal[columnName])}
                         </span>
                       </div>
                     );
                   }
                 })}
+                <div key={index} className={styles["table__cell--body"]} />
               </div>
             );
           })}

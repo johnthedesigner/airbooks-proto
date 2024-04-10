@@ -98,7 +98,7 @@ export const substituteFilter = (filter: any, key: string, value: any) => {
 
 // Apply filters and return resulting maturities
 export const applyDealFilters = (deals: any, filter: any) => {
-  return _(deals)
+  let filteredDeals = _(deals)
     .filter((m: any) => {
       return (
         (filter.rating.length === 0 && filter.sector.length === 0) ||
@@ -112,6 +112,10 @@ export const applyDealFilters = (deals: any, filter: any) => {
       );
     })
     .value();
+
+  console.log("FILTERED DEALS", deals, filteredDeals);
+
+  return filteredDeals;
 };
 
 export const applyFilters = async (
