@@ -84,46 +84,50 @@ export default function Home() {
           <div className={styles["body__nonscrolling-area"]}>
             <Cell>
               <DealTable
-                dealData={dealData}
+                dealData={filteredDeals}
                 maturityData={filteredMaturities}
               />
             </Cell>
           </div>
           <div className={styles["body__scrolling-area"]}>
             <Column fr={1}>
-              <Row fr={1}>
-                <Column fr={1}>
-                  <Cell>
-                    <RatingsCard
-                      chartData={dealData}
-                      handleFilterUpdate={handleToggleFilterValue}
-                      filter={filter}
-                    />
-                  </Cell>
+              <Row fr={3}>
+                <Column fr={3}>
+                  <Row fr={1}>
+                    <Column fr={1}>
+                      <Cell>
+                        <RatingsCard
+                          chartData={dealData}
+                          handleFilterUpdate={handleToggleFilterValue}
+                          filter={filter}
+                        />
+                      </Cell>
+                    </Column>
+                    <Column fr={1}>
+                      <Cell>
+                        <SectorCard
+                          chartData={dealData}
+                          handleFilterUpdate={handleToggleFilterValue}
+                          filter={filter}
+                        />
+                      </Cell>
+                    </Column>
+                  </Row>
+                  <Row fr={1}>
+                    <Column fr={1}>
+                      <Cell>
+                        <MaturityBreakdown chartData={filteredMaturities} />
+                      </Cell>
+                    </Column>
+                  </Row>
                 </Column>
-                <Column fr={1}>
-                  <Cell>
-                    <SectorCard
-                      chartData={dealData}
-                      handleFilterUpdate={handleToggleFilterValue}
-                      filter={filter}
-                    />
-                  </Cell>
-                </Column>
-                <Column fr={1}>
+                <Column fr={2}>
                   <Cell>
                     <MapCard
                       chartData={filteredDeals}
                       handleFilterUpdate={handleToggleFilterValue}
                       filter={filter}
                     />
-                  </Cell>
-                </Column>
-              </Row>
-              <Row fr={1}>
-                <Column fr={1}>
-                  <Cell>
-                    <MaturityBreakdown chartData={filteredMaturities} />
                   </Cell>
                 </Column>
               </Row>

@@ -27,7 +27,8 @@ const FilterSelect = ({
 
   return (
     <>
-      {filter[filterType].length > 0 && (
+      {/* {filter[filterType].length > 0 && ( */}
+      {true && (
         <FormControl sx={{ width }}>
           <FormLabel>{filterList[filterType].label}</FormLabel>
           <Select
