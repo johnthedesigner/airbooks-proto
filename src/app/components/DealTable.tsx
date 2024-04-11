@@ -38,6 +38,7 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
         }}
         variant="soft"
         color="primary"
+        disabled={label === "-"}
         onClick={() => handleFilterUpdate("rating", label)}>
         {label}
       </Button>
@@ -64,7 +65,7 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
             }, fit-content(2rem))`,
             gridColumnGap: "0px",
             gridRowGap: "0px",
-            padding: ".5rem",
+            padding: "0 .5rem .5rem",
           }}>
           <div
             className={styles["table__header"]}
