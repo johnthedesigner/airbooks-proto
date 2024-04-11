@@ -78,7 +78,6 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <div className={styles.header} />
       <div className={styles.body}>
         <div className={styles["body__content"]}>
           <div className={styles["body__filter-bar"]}>
