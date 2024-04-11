@@ -33,6 +33,8 @@ const FilterSelect = ({
             multiple
             // defaultValue={[]}
             value={filter[filterType]}
+            size={"sm"}
+            placeholder={`Filter by ${filterList[filterType].label}`}
             onChange={handleChange}
             renderValue={(selected: any) => (
               <Box sx={{ display: "flex", gap: "0.25rem" }}>
@@ -44,7 +46,8 @@ const FilterSelect = ({
               </Box>
             )}
             sx={{
-              minWidth: "15rem",
+              minWidth: "10rem",
+              maxWidth: "20rem",
             }}
             slotProps={{
               listbox: {

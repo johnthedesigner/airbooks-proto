@@ -18,42 +18,52 @@ import CardHeader from "./CardHeader";
 import styles from "./RatingsCard.module.css";
 
 interface chartProps {
-  chartData: any;
+  filteredData: any;
+  unfilteredData: any;
   handleFilterUpdate: Function;
   filter: any;
 }
 
-const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
-  // Aggregate deals by sector
-  const dealsFromData = _.countBy(chartData, (deal: any, index: number) => {
-    return deal["Sector"];
-  });
+const SectorCard = ({
+  unfilteredData,
+  filteredData,
+  handleFilterUpdate,
+  filter,
+}: chartProps) => {
+  const getParTotals = (data: any) => {
+    // Sum par amount by sector
+    let parTotals = _.reduce(
+      data,
+      (result: any, value: any) => {
+        // Get current sector
+        let sector = value["Sector"];
+        // Make sure we have a result object and property to start with
+        result || (result = {});
+        if (!result[sector]) result[sector] = 0;
+        // Add up the par amounts to get a total by rating
+        result[sector] = Number(result[sector]) + Number(value["Par ($M)"]);
+        return result;
+      },
+      {}
+    );
+    return parTotals;
+  };
 
-  // Sum par amount by sector
-  let parTotalsBySector = _.reduce(
-    chartData,
-    (result: any, value: any) => {
-      // Get current sector
-      let sector = value["Sector"];
-      // Make sure we have a result object and property to start with
-      result || (result = {});
-      if (!result[sector]) result[sector] = 0;
-      // Add up the par amounts to get a total by rating
-      result[sector] = Number(result[sector]) + Number(value["Par ($M)"]);
-      return result;
-    },
-    {}
-  );
+  let unfilteredParTotals = getParTotals(unfilteredData);
+  let filteredParTotals = getParTotals(filteredData);
 
-  const sectors = _.keys(parTotalsBySector);
+  const sectors = _.keys(unfilteredParTotals);
   let assembledData = _.orderBy(
     _.map(sectors, (sector: string) => {
       return {
         name: sector,
-        par: parTotalsBySector[sector],
+        parDelta:
+          unfilteredParTotals[sector] - (filteredParTotals[sector] || 0),
+        unfilteredPar: unfilteredParTotals[sector],
+        filteredPar: filteredParTotals[sector] || 0,
       };
     }),
-    "par",
+    "unfilteredPar",
     "desc"
   );
 
@@ -88,15 +98,38 @@ const SectorCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
               }}></XAxis>
             <YAxis />
             <Tooltip />
-            <Bar dataKey="par" stackId="a" fill="#FF8042" onClick={handleClick}>
+            <Bar
+              dataKey="filteredPar"
+              stackId="a"
+              fill="#FF8042"
+              onClick={handleClick}>
               {assembledData.map((entry, index) => {
                 return (
                   <Cell
                     cursor="pointer"
                     fill={
                       _.includes(filter.sector, entry.name)
-                        ? "#82ca9d"
-                        : "#8884d8"
+                        ? "#FF8042"
+                        : "#FFBB28"
+                    }
+                    key={`cell-${index}`}
+                  />
+                );
+              })}
+            </Bar>
+            <Bar
+              dataKey="parDelta"
+              stackId="a"
+              fill="#FF8042"
+              onClick={handleClick}>
+              {assembledData.map((entry, index) => {
+                return (
+                  <Cell
+                    cursor="pointer"
+                    fill={
+                      _.includes(filter.sector, entry.name)
+                        ? "#BBBBBB"
+                        : "#DDDDDD"
                     }
                     key={`cell-${index}`}
                   />

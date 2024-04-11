@@ -27,9 +27,17 @@ import { Button } from "@mui/joy";
 import MapCard from "./components/MapCard";
 
 export default function Home() {
+  var filteredDealsInitialState = {
+    byRating: new Array() as any[],
+    bySector: new Array() as any[],
+    byState: new Array() as any[],
+    byTaxStatus: new Array() as any[],
+    byIntersection: new Array() as any[],
+  };
+
   const [filter, setFilter] = useState<filterStateInterface>(filterState);
   const [filteredMaturities, setFilteredMaturities] = useState(new Array());
-  const [filteredDeals, setFilteredDeals] = useState(new Array());
+  const [filteredDeals, setFilteredDeals] = useState(filteredDealsInitialState);
 
   // map rating data into consistent categories
   let preparedDeals = mapRatings(dealData);
@@ -42,8 +50,16 @@ export default function Home() {
         maturityData,
         filter
       );
-      setFilteredDeals(filteredData.deals);
-      setFilteredMaturities(filteredData.maturities);
+      let { byRating, bySector, byState, byTaxStatus, byIntersection } =
+        filteredData.filteredDeals;
+      setFilteredDeals({
+        byRating,
+        bySector,
+        byState,
+        byTaxStatus,
+        byIntersection,
+      });
+      setFilteredMaturities(filteredData.filteredMaturities);
     };
     getFilteredData();
   }, [filter]);
@@ -66,17 +82,17 @@ export default function Home() {
       <div className={styles.body}>
         <div className={styles["body__content"]}>
           <div className={styles["body__filter-bar"]}>
-            <Button onClick={resetFilter}>Reset Filter</Button>
+            <Button size={"sm"} onClick={resetFilter}>
+              Reset Filter
+            </Button>
             <FilterSelect
               filter={filter}
               filterType="rating"
-              // width={200}
               handleFilterUpdate={handleFilterUpdate}
             />
             <FilterSelect
               filter={filter}
               filterType="sector"
-              // width={300}
               handleFilterUpdate={handleFilterUpdate}
             />
             <FilterSelect
@@ -93,12 +109,19 @@ export default function Home() {
           <div className={styles["body__nonscrolling-area"]}>
             <Row fr={2}>
               <Cell>
-                <DealTable dealData={filteredDeals} />
+                <DealTable
+                  dealData={filteredDeals.byIntersection}
+                  handleFilterUpdate={handleToggleFilterValue}
+                  filter={filter}
+                />
               </Cell>
             </Row>
             <Row fr={1}>
               <Cell>
-                <MaturityBreakdown chartData={filteredMaturities} />
+                <MaturityBreakdown
+                  unfilteredData={maturityData}
+                  filteredData={filteredMaturities}
+                />
               </Cell>
             </Row>
           </div>
@@ -110,7 +133,8 @@ export default function Home() {
                     <Column fr={1}>
                       <Cell>
                         <RatingsCard
-                          chartData={preparedDeals}
+                          unfilteredData={preparedDeals}
+                          filteredData={filteredDeals.byIntersection}
                           handleFilterUpdate={handleToggleFilterValue}
                           filter={filter}
                         />
@@ -121,7 +145,8 @@ export default function Home() {
                     <Column fr={1}>
                       <Cell>
                         <SectorCard
-                          chartData={preparedDeals}
+                          unfilteredData={preparedDeals}
+                          filteredData={filteredDeals.byIntersection}
                           handleFilterUpdate={handleToggleFilterValue}
                           filter={filter}
                         />
@@ -132,7 +157,8 @@ export default function Home() {
                 <Column fr={1}>
                   <Cell>
                     <MapCard
-                      chartData={filteredDeals}
+                      unfilteredData={preparedDeals}
+                      filteredData={filteredDeals.byIntersection}
                       handleFilterUpdate={handleToggleFilterValue}
                       filter={filter}
                     />

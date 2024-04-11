@@ -11,18 +11,24 @@ import styles from "./RatingsCard.module.css";
 import { stateNameFromAbbrev } from "@/utils/stateUtils";
 
 interface chartProps {
-  chartData: any;
+  unfilteredData: any;
+  filteredData: any;
   handleFilterUpdate: Function;
   filter: any;
 }
 
-const MapCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
+const MapCard = ({
+  unfilteredData,
+  filteredData,
+  handleFilterUpdate,
+  filter,
+}: chartProps) => {
   // const dataByState = _.countBy(chartData, (deal: any) => {
   //   return deal["State"];
   // });
   // Sum par amount by state
   let parTotalsByState = _.reduce(
-    chartData,
+    filteredData,
     (result: any, value: any) => {
       // Get current state
       let state = value["State"];
@@ -35,7 +41,6 @@ const MapCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
     },
     {}
   );
-  console.log("CHECK PAR BY STATE", parTotalsByState);
 
   const assembledData = _.map(
     parTotalsByState,

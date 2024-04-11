@@ -17,12 +17,13 @@ import CardHeader from "./CardHeader";
 import styles from "./MaturityBreakdown.module.css";
 
 interface chartProps {
-  chartData: any;
+  unfilteredData: any;
+  filteredData: any;
 }
 
-const MaturityBreakdown = ({ chartData }: chartProps) => {
+const MaturityBreakdown = ({ unfilteredData, filteredData }: chartProps) => {
   // Build an array of years with total par amounts
-  const yearsPresent = _.map(chartData, (maturity: any) => {
+  const yearsPresent = _.map(unfilteredData, (maturity: any) => {
     return maturity.Structure;
   });
   // Get the time span represented by the data
@@ -30,26 +31,38 @@ const MaturityBreakdown = ({ chartData }: chartProps) => {
   const latestYear = _.max(yearsPresent);
   const yearSpan = latestYear - earliestYear + 1;
   // Get maturities keyed by year
-  const parByMaturity = _(chartData)
-    .filter((obj: any) => obj.Structure != "-")
-    .groupBy("Structure")
-    .map((objs: any, key: string) => ({
-      name: key,
-      par: _.sumBy(objs, "Par ($M)"),
-    }))
-    .value();
-  // Loop through years in range and add in empty buckets
+  let getParByMaturity = (data: any) => {
+    const parByMaturity = _(data)
+      .filter((obj: any) => obj.Structure != "-")
+      .groupBy("Structure")
+      .map((objs: any, key: string) => ({
+        name: key,
+        par: _.sumBy(objs, "Par ($M)"),
+      }))
+      .value();
+    return parByMaturity;
+  };
+  // get Par by maturity for filtered and unfiltered data
+  let unfilteredParByMaturity = getParByMaturity(unfilteredData);
+  let filteredParByMaturity = getParByMaturity(filteredData);
+  // Assembled into chart data
+  var assembledData = new Array();
+  // Loop through years in range and add in data
   _.times(yearSpan, (index: number) => {
     let year = earliestYear + index + "";
-    let existingYear = _.find(parByMaturity, (item: any) => {
+    let unfilteredItem = _.find(unfilteredParByMaturity, (item: any) => {
       return item.name === year;
     });
-    if (existingYear === undefined) {
-      parByMaturity.push({
-        name: year,
-        par: 0,
-      });
-    }
+    let unfilteredValue = unfilteredItem ? Number(unfilteredItem.par) : 0;
+    let filteredItem = _.find(filteredParByMaturity, (item: any) => {
+      return item.name === year;
+    });
+    let filteredValue = filteredItem ? Number(filteredItem.par) : 0;
+    assembledData.push({
+      name: year,
+      unfilteredValue: unfilteredValue - filteredValue,
+      filteredValue,
+    });
   });
 
   return (
@@ -63,7 +76,7 @@ const MaturityBreakdown = ({ chartData }: chartProps) => {
           <BarChart
             width={500}
             height={300}
-            data={parByMaturity}
+            data={assembledData}
             margin={{
               top: 20,
               right: 20,
@@ -75,7 +88,8 @@ const MaturityBreakdown = ({ chartData }: chartProps) => {
             <YAxis />
             <Tooltip />
             {/* <Legend /> */}
-            <Bar dataKey="par" stackId="a" fill="#FFBB28" />
+            <Bar dataKey="filteredValue" stackId="a" fill="#8884d8" />
+            <Bar dataKey="unfilteredValue" stackId="a" fill="#DDDDDD" />
             {/* <Bar dataKey="Fitch" stackId="a" fill="#8884d8" />
             <Bar dataKey="Kroll" stackId="a" fill="#82ca9d" />
             <Bar dataKey="Moody's" stackId="a" fill="#FFBB28" />

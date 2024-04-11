@@ -18,12 +18,18 @@ import styles from "./RatingsCard.module.css";
 import { mapRating } from "@/utils/ratingUtils";
 
 interface chartProps {
-  chartData: any;
+  unfilteredData: any;
+  filteredData: any;
   handleFilterUpdate: Function;
   filter: any;
 }
 
-const RatingsCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
+const RatingsCard = ({
+  unfilteredData,
+  filteredData,
+  handleFilterUpdate,
+  filter,
+}: chartProps) => {
   // Ratings categories
   const ratingsCategories = [
     "AAA",
@@ -62,26 +68,46 @@ const RatingsCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
     );
     return parTotals;
   };
-  // Par totals for each rating body
-  let moodysParTotals = ratingsReduce(chartData, "moodysNormal");
-  let spParTotals = ratingsReduce(chartData, "spNormal");
-  let fitchParTotals = ratingsReduce(chartData, "fitchNormal");
-  let krollParTotals = ratingsReduce(chartData, "krollNormal");
-  // Grand total (with overlap) of par totals by rating
-  var assembledData = new Array();
-  _.each(ratingsCategories, (rating: string) => {
-    assembledData.push({
-      name: rating,
-      value:
-        (moodysParTotals[rating] || 0) +
-        (spParTotals[rating] || 0) +
-        (fitchParTotals[rating] || 0) +
-        (krollParTotals[rating] || 0),
+
+  const assembleData = (data: any) => {
+    // Par totals for each rating body
+    let moodysParTotals = ratingsReduce(data, "moodysNormal");
+    let spParTotals = ratingsReduce(data, "spNormal");
+    let fitchParTotals = ratingsReduce(data, "fitchNormal");
+    let krollParTotals = ratingsReduce(data, "krollNormal");
+    // Grand total (with overlap) of par totals by rating
+    var assembledData = new Array();
+    _.each(ratingsCategories, (rating: string) => {
+      assembledData.push({
+        name: rating,
+        value:
+          (moodysParTotals[rating] || 0) +
+          (spParTotals[rating] || 0) +
+          (fitchParTotals[rating] || 0) +
+          (krollParTotals[rating] || 0),
+      });
     });
+    return assembledData;
+  };
+
+  let assembledFilteredData = assembleData(filteredData);
+  let assembledUnfilteredData = assembleData(unfilteredData);
+
+  let assembledMergedData = _.map(ratingsCategories, (rating: string) => {
+    let filteredValue = _.find(assembledFilteredData, (datum: any) => {
+      return datum.name === rating;
+    });
+    let unfilteredValue = _.find(assembledUnfilteredData, (datum: any) => {
+      return datum.name === rating;
+    });
+    return {
+      name: rating,
+      filteredValue: filteredValue.value,
+      unfilteredValue: unfilteredValue.value - filteredValue.value,
+    };
   });
 
   const handleClick = (data: any, index: number) => {
-    console.log("BAR CLICKED", data, index);
     handleFilterUpdate("rating", data.name);
   };
 
@@ -96,7 +122,7 @@ const RatingsCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
           <BarChart
             width={500}
             height={300}
-            data={assembledData}
+            data={assembledMergedData}
             margin={{
               top: 20,
               right: 20,
@@ -108,18 +134,37 @@ const RatingsCard = ({ chartData, handleFilterUpdate, filter }: chartProps) => {
             <YAxis />
             <Tooltip />
             <Bar
-              dataKey="value"
+              dataKey="filteredValue"
               stackId="a"
               fill="#FF8042"
               onClick={handleClick}>
-              {assembledData.map((entry, index) => {
+              {assembledMergedData.map((entry, index) => {
                 return (
                   <Cell
                     cursor="pointer"
                     fill={
                       _.includes(filter.rating, entry.name)
-                        ? "#82ca9d"
-                        : "#8884d8"
+                        ? "#FF8042"
+                        : "#FFBB28"
+                    }
+                    key={`cell-${index}`}
+                  />
+                );
+              })}
+            </Bar>
+            <Bar
+              dataKey="unfilteredValue"
+              stackId="a"
+              fill="#FF8042"
+              onClick={handleClick}>
+              {assembledMergedData.map((entry, index) => {
+                return (
+                  <Cell
+                    cursor="pointer"
+                    fill={
+                      _.includes(filter.rating, entry.name)
+                        ? "#BBBBBB"
+                        : "#DDDDDD"
                     }
                     key={`cell-${index}`}
                   />

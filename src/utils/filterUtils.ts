@@ -178,8 +178,8 @@ export const substituteFilter = (filter: any, key: string, value: any) => {
 };
 
 // Apply filters and return resulting maturities
-export const applyDealFilters = (deals: any, filter: any) => {
-  let filteredDeals = _(deals)
+export const applyDealFilters = async (deals: any, filter: any) => {
+  let filteredDeals = await _(deals)
     .filter((m: any) => {
       return (
         (filter.rating.length === 0 &&
@@ -201,7 +201,64 @@ export const applyDealFilters = (deals: any, filter: any) => {
     })
     .value();
 
-  return filteredDeals;
+  // Get deals filtered by rating
+  let byRating = await _(deals)
+    .filter((deal: any) => {
+      return (
+        filter.rating.length === 0 ||
+        _.includes(filter.rating, singleValue(deal.moodysNormal)) ||
+        _.includes(filter.rating, singleValue(deal.spNormal)) ||
+        _.includes(filter.rating, singleValue(deal.fitchNormal)) ||
+        _.includes(filter.rating, singleValue(deal.krollNormal))
+      );
+    })
+    .value();
+
+  // Get deals filtered by sector
+  let bySector = await _(deals)
+    .filter((deal: any) => {
+      return (
+        filter.sector.length === 0 ||
+        _.includes(filter.sector, singleValue(deal.Sector))
+      );
+    })
+    .value();
+
+  // Get deals filtered by state
+  let byState = await _(deals)
+    .filter((deal: any) => {
+      return (
+        filter.state.length === 0 ||
+        _.includes(filter.state, singleValue(deal.State))
+      );
+    })
+    .value();
+
+  // Get deals filtered by tax status
+  let byTaxStatus = await _(deals)
+    .filter((deal: any) => {
+      return (
+        filter.taxStatus.length === 0 ||
+        _.includes(filter.taxStatus, singleValue(deal["Tax Status"]))
+      );
+    })
+    .value();
+
+  let byIntersection = await _.intersection(
+    byRating,
+    bySector,
+    byState,
+    byTaxStatus
+  );
+
+  return {
+    allDeals: filteredDeals,
+    byRating,
+    bySector,
+    byState,
+    byTaxStatus,
+    byIntersection,
+  };
 };
 
 export const applyFilters = async (
@@ -212,7 +269,7 @@ export const applyFilters = async (
   // Filter deals based on current filter values
   let filteredDeals = await applyDealFilters(deals, filter);
   // Get the indexes of the resulting list of deals
-  let dealIndexes = await _.map(filteredDeals, (deal: any) => {
+  let dealIndexes = await _.map(filteredDeals.allDeals, (deal: any) => {
     return deal.Index;
   });
   // Filter maturities to only those from the filtered deals
@@ -221,7 +278,8 @@ export const applyFilters = async (
   });
   // Return filtered lists to the UI
   return {
-    deals: filteredDeals,
-    maturities: filteredMaturities,
+    deals: filteredDeals.allDeals,
+    filteredDeals,
+    filteredMaturities,
   };
 };

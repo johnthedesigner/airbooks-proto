@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { Box, Button } from "@mui/joy";
 
 import Card from "./Card";
 import CardHeader from "./CardHeader";
@@ -7,9 +8,11 @@ import { singleValue } from "@/utils/dataUtils";
 
 interface tableProps {
   dealData: any;
+  handleFilterUpdate: Function;
+  filter: any;
 }
 
-const DealTable = ({ dealData }: tableProps) => {
+const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
   const columns = [
     "Date",
     "Issuer",
@@ -19,6 +22,27 @@ const DealTable = ({ dealData }: tableProps) => {
     "Tax Status",
     "Rating",
   ];
+
+  const RatingButton = ({ label }: any) => {
+    label = label === "Not Rated" ? "-" : label;
+    console.log(label);
+    return (
+      <Button
+        size={"sm"}
+        sx={{
+          width: "2.5rem",
+          minHeight: ".75rem",
+          padding: "0.25rem .25rem",
+          fontSize: ".75rem",
+          background: _.includes(filter.rating, label) ? "#b6d3ef" : "default",
+        }}
+        variant="soft"
+        color="primary"
+        onClick={() => handleFilterUpdate("rating", label)}>
+        {label}
+      </Button>
+    );
+  };
 
   var gridTemplate = "";
   _.times(columns.length, () => {
@@ -70,13 +94,18 @@ const DealTable = ({ dealData }: tableProps) => {
                   padding: ".25rem",
                 }}>
                 {_.map(columns, (columnName: string, index: number) => {
-                  if (columnName === "rating") {
+                  console.log("CHECK COLUMN NAME", columnName);
+                  if (columnName === "Rating") {
+                    // For ratings cluster
+                    console.log("CHECK TABLE RATINGS", deal.moodysNormal);
                     return (
                       <div key={index} className={styles["table__cell--body"]}>
-                        <span className={styles["table__text"]}>
-                          {deal.moodysNormal}|{deal.spNormal}|{deal.fitchNormal}
-                          |{deal.krollNormal}
-                        </span>
+                        <Box sx={{ display: "flex", gap: "0.25rem" }}>
+                          <RatingButton label={deal.moodysNormal} />
+                          <RatingButton label={deal.spNormal} />
+                          <RatingButton label={deal.fitchNormal} />
+                          <RatingButton label={deal.krollNormal} />
+                        </Box>
                       </div>
                     );
                   } else {
