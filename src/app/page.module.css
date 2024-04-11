@@ -28,6 +28,7 @@
   height: 20rem;
   min-height: 50vh;
   display: flex;
+  flex: 3;
   flex-direction: column;
   border-bottom: #999 solid 1px;
 }
@@ -35,6 +36,9 @@
 .body__scrolling-area {
   display: flex;
   overflow: auto;
+  transition: all ease-in-out 0.2s;
+  flex: 2;
+  /* height: auto; */
 }
 
 .body__filter-bar {

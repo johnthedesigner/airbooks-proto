@@ -35,6 +35,7 @@ export default function Home() {
     byIntersection: new Array() as any[],
   };
 
+  const [showCharts, setShowCharts] = useState(true);
   const [filter, setFilter] = useState<filterStateInterface>(filterState);
   const [filteredMaturities, setFilteredMaturities] = useState(new Array());
   const [filteredDeals, setFilteredDeals] = useState(filteredDealsInitialState);
@@ -104,6 +105,17 @@ export default function Home() {
               filterType="taxStatus"
               handleFilterUpdate={handleFilterUpdate}
             />
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-end",
+              }}>
+              <Button size={"sm"} onClick={() => setShowCharts(!showCharts)}>
+                {showCharts ? "Hide Charts" : "Show Charts"}
+              </Button>
+            </div>
           </div>
           <div className={styles["body__nonscrolling-area"]}>
             <Row fr={2}>
@@ -115,7 +127,7 @@ export default function Home() {
                 />
               </Cell>
             </Row>
-            <Row fr={1}>
+            <Row fr={1} maxHeight={"12rem"}>
               <Cell>
                 <MaturityBreakdown
                   unfilteredData={maturityData}
@@ -124,7 +136,9 @@ export default function Home() {
               </Cell>
             </Row>
           </div>
-          <div className={styles["body__scrolling-area"]}>
+          <div
+            className={styles["body__scrolling-area"]}
+            style={{ flex: showCharts ? 2 : 0 }}>
             <Column fr={1}>
               <Row fr={1}>
                 <Column fr={2}>
