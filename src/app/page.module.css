@@ -25,7 +25,7 @@
 }
 
 .body__nonscrolling-area {
-  height: 20rem;
+  /* height: 10rem; */
   display: flex;
   /* flex: 3; */
   flex-direction: column;

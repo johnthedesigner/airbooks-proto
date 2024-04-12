@@ -148,11 +148,11 @@ export default function Home() {
             <div
               className={styles["body__nonscrolling-area"]}
               style={{
-                flex: viewMode === "table" || viewMode === "combo" ? 3 : 0,
+                flex: viewMode === "table" || viewMode === "combo" ? 2 : 0,
                 minHeight:
-                  viewMode === "table" || viewMode === "combo" ? "60vh" : "0vh",
+                  viewMode === "table" || viewMode === "combo" ? "40vh" : "0vh",
               }}>
-              <Row fr={2}>
+              <Row fr={1}>
                 <Cell>
                   <DealTable
                     dealData={filteredDeals.byIntersection}
@@ -161,21 +161,21 @@ export default function Home() {
                   />
                 </Cell>
               </Row>
-              <Row fr={1} maxHeight={"16rem"}>
-                <Cell>
-                  <MaturityBreakdown
-                    unfilteredData={maturityData}
-                    filteredData={filteredMaturities}
-                  />
-                </Cell>
-              </Row>
             </div>
             <div
               className={styles["body__scrolling-area"]}
               style={{
-                flex: viewMode === "charts" || viewMode === "combo" ? 2 : 0,
+                flex: viewMode === "charts" || viewMode === "combo" ? 3 : 0,
               }}>
               <Column fr={1}>
+                <Row fr={1} maxHeight={"16rem"}>
+                  <Cell>
+                    <MaturityBreakdown
+                      unfilteredData={maturityData}
+                      filteredData={filteredMaturities}
+                    />
+                  </Cell>
+                </Row>
                 <Row fr={1}>
                   <Column fr={2}>
                     <Row fr={1} maxHeight={"16rem"}>
