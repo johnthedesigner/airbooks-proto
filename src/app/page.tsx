@@ -25,9 +25,10 @@ import SectorCard from "./components/SectorCard";
 import MaturityBreakdown from "./components/MaturityBreakdown";
 import { mapRatings } from "@/utils/ratingUtils";
 import FilterSelect from "./components/filter/FilterSelect";
-import { Button } from "@mui/joy";
+import { Button, ButtonGroup, FormLabel } from "@mui/joy";
 import MapCard from "./components/MapCard";
 import CalendarTotals from "./components/CalendarTotals";
+import LeagueTable from "./components/LeageTable";
 
 export default function Home() {
   var filteredDealsInitialState = {
@@ -38,7 +39,7 @@ export default function Home() {
     byIntersection: new Array() as any[],
   };
 
-  const [showCharts, setShowCharts] = useState(true);
+  const [viewMode, setViewMode] = useState("combo");
   const [filter, setFilter] = useState<filterStateInterface>(filterState);
   const [filteredMaturities, setFilteredMaturities] = useState(new Array());
   const [filteredDeals, setFilteredDeals] = useState(filteredDealsInitialState);
@@ -121,12 +122,36 @@ export default function Home() {
                   flexDirection: "row",
                   justifyContent: "flex-end",
                 }}>
-                <Button size={"sm"} onClick={() => setShowCharts(!showCharts)}>
-                  {showCharts ? "Hide Charts" : "Show Charts"}
-                </Button>
+                <FormLabel sx={{ margin: "0 .5rem" }}>View Mode</FormLabel>
+                <ButtonGroup size={"sm"}>
+                  <Button
+                    variant={viewMode === "table" ? "solid" : undefined}
+                    size={"sm"}
+                    onClick={() => setViewMode("table")}>
+                    Table
+                  </Button>
+                  <Button
+                    variant={viewMode === "charts" ? "solid" : undefined}
+                    size={"sm"}
+                    onClick={() => setViewMode("charts")}>
+                    Charts
+                  </Button>
+                  <Button
+                    variant={viewMode === "combo" ? "solid" : undefined}
+                    size={"sm"}
+                    onClick={() => setViewMode("combo")}>
+                    Both
+                  </Button>
+                </ButtonGroup>
               </div>
             </div>
-            <div className={styles["body__nonscrolling-area"]}>
+            <div
+              className={styles["body__nonscrolling-area"]}
+              style={{
+                flex: viewMode === "table" || viewMode === "combo" ? 3 : 0,
+                minHeight:
+                  viewMode === "table" || viewMode === "combo" ? "60vh" : "0vh",
+              }}>
               <Row fr={2}>
                 <Cell>
                   <DealTable
@@ -137,40 +162,40 @@ export default function Home() {
                 </Cell>
               </Row>
               <Row fr={1} maxHeight={"16rem"}>
-                <Column fr={2}>
-                  <Cell>
-                    <CalendarTotals
-                      unfilteredData={preparedDeals}
-                      filteredData={filteredDeals.byIntersection}
-                      filter={filter}
-                      handleFilterUpdate={handleFilterUpdate}
-                    />
-                  </Cell>
-                </Column>
-                <Column fr={5}>
-                  <Cell>
-                    <MaturityBreakdown
-                      unfilteredData={maturityData}
-                      filteredData={filteredMaturities}
-                    />
-                  </Cell>
-                </Column>
+                <Cell>
+                  <MaturityBreakdown
+                    unfilteredData={maturityData}
+                    filteredData={filteredMaturities}
+                  />
+                </Cell>
               </Row>
             </div>
             <div
               className={styles["body__scrolling-area"]}
-              style={{ flex: showCharts ? 2 : 0 }}>
+              style={{
+                flex: viewMode === "charts" || viewMode === "combo" ? 2 : 0,
+              }}>
               <Column fr={1}>
                 <Row fr={1}>
                   <Column fr={2}>
-                    <Row fr={1}>
+                    <Row fr={1} maxHeight={"16rem"}>
                       <Column fr={1}>
                         <Cell>
-                          <RatingsCard
+                          <CalendarTotals
                             unfilteredData={preparedDeals}
                             filteredData={filteredDeals.byIntersection}
-                            handleFilterUpdate={handleToggleFilterValue}
                             filter={filter}
+                            handleFilterUpdate={handleFilterUpdate}
+                          />
+                        </Cell>
+                      </Column>
+                      <Column fr={2}>
+                        <Cell>
+                          <LeagueTable
+                            unfilteredData={preparedDeals}
+                            filteredData={filteredDeals.byIntersection}
+                            filter={filter}
+                            handleFilterUpdate={handleFilterUpdate}
                           />
                         </Cell>
                       </Column>
@@ -178,7 +203,7 @@ export default function Home() {
                     <Row fr={1}>
                       <Column fr={1}>
                         <Cell>
-                          <SectorCard
+                          <RatingsCard
                             unfilteredData={preparedDeals}
                             filteredData={filteredDeals.byIntersection}
                             handleFilterUpdate={handleToggleFilterValue}
@@ -198,6 +223,16 @@ export default function Home() {
                       />
                     </Cell>
                   </Column>
+                </Row>
+                <Row fr={1}>
+                  <Cell>
+                    <SectorCard
+                      unfilteredData={preparedDeals}
+                      filteredData={filteredDeals.byIntersection}
+                      handleFilterUpdate={handleToggleFilterValue}
+                      filter={filter}
+                    />
+                  </Cell>
                 </Row>
               </Column>
             </div>
