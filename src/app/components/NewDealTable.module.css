@@ -12,7 +12,7 @@
   position: sticky;
   top: 0;
   background: white;
-  border-bottom: #ddd solid 2px;
+  border-bottom: var(--grayscale-2) solid 2px;
   box-sizing: border-box;
   font-weight: 600;
 }

@@ -4,6 +4,6 @@
   flex: 1;
   align-self: stretch;
   justify-self: stretch;
-  border: #ddd solid 1px;
+  border: var(--grayscale-2) solid 1px;
   border-radius: 0.25rem;
 }

@@ -17,6 +17,7 @@ import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./RatingsCard.module.css";
 import { numberFormat } from "@/utils/dataUtils";
+import { palettes } from "@/utils/colorUtils";
 
 interface chartProps {
   filteredData: any;
@@ -91,13 +92,18 @@ const SectorCard = ({
               left: 20,
               bottom: 0,
             }}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid
+              stroke={palettes.grayscale[2]}
+              strokeDasharray="3 3"
+            />
             <XAxis
               dataKey="name"
+              stroke={palettes.grayscale[6]}
               tickFormatter={(value: any) => {
                 return value.substring(0, 5);
               }}></XAxis>
             <YAxis
+              stroke={palettes.grayscale[6]}
               tickFormatter={(value: any) => {
                 return numberFormat(Number(value), "par-axis") || "";
               }}
@@ -114,8 +120,8 @@ const SectorCard = ({
                     cursor="pointer"
                     fill={
                       _.includes(filter.sector, entry.name)
-                        ? "#FF8042"
-                        : "#FFBB28"
+                        ? palettes.orange[5]
+                        : palettes.orange[4]
                     }
                     key={`cell-${index}`}
                   />
@@ -133,8 +139,8 @@ const SectorCard = ({
                     cursor="pointer"
                     fill={
                       _.includes(filter.sector, entry.name)
-                        ? "#BBBBBB"
-                        : "#DDDDDD"
+                        ? palettes.orange[2]
+                        : palettes.orange[1]
                     }
                     key={`cell-${index}`}
                   />

@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+import { palettes } from "@/utils/colorUtils";
 import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./MaturityBreakdown.module.css";
@@ -84,17 +85,29 @@ const MaturityBreakdown = ({ unfilteredData, filteredData }: chartProps) => {
               left: 20,
               bottom: 0,
             }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
+            <CartesianGrid
+              stroke={palettes.grayscale[2]}
+              strokeDasharray="3 3"
+            />
+            <XAxis stroke={palettes.grayscale[6]} dataKey="name" />
             <YAxis
+              stroke={palettes.grayscale[6]}
               tickFormatter={(value: any) => {
                 return numberFormat(Number(value), "par-axis") || "";
               }}
             />
             <Tooltip />
             {/* <Legend/> */}
-            <Bar dataKey="filteredValue" stackId="a" fill="#8884d8" />
-            <Bar dataKey="unfilteredValue" stackId="a" fill="#DDDDDD" />
+            <Bar
+              dataKey="filteredValue"
+              stackId="a"
+              fill={palettes.purple[6]}
+            />
+            <Bar
+              dataKey="unfilteredValue"
+              stackId="a"
+              fill={palettes.purple[2]}
+            />
             {/* <Bar dataKey="Fitch" stackId="a" fill="#8884d8" />
             <Bar dataKey="Kroll" stackId="a" fill="#82ca9d" />
             <Bar dataKey="Moody's" stackId="a" fill="#FFBB28" />

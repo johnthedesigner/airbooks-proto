@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import _ from "lodash";
+import { CssVarsProvider } from "@mui/joy/styles";
 
+import { theme } from "@/utils/colorUtils";
 import dealData from "../data/deals.json";
 import maturityData from "../data/maturities.json";
 import {
@@ -79,127 +81,129 @@ export default function Home() {
   };
 
   return (
-    <main className={styles.main}>
-      <div className={styles.body}>
-        <div className={styles["body__content"]}>
-          <div className={styles["body__filter-bar"]}>
-            <Button size={"sm"} onClick={resetFilter}>
-              Reset Filter
-            </Button>
-            <FilterSelect
-              filter={filter}
-              filterType="rating"
-              handleFilterUpdate={handleFilterUpdate}
-            />
-            <FilterSelect
-              filter={filter}
-              filterType="sector"
-              handleFilterUpdate={handleFilterUpdate}
-            />
-            <FilterSelect
-              filter={filter}
-              filterType="state"
-              handleFilterUpdate={handleFilterUpdate}
-            />
-            <FilterSelect
-              filter={filter}
-              filterType="taxStatus"
-              handleFilterUpdate={handleFilterUpdate}
-            />
-            <FilterSelect
-              filter={filter}
-              filterType="offeringType"
-              handleFilterUpdate={handleFilterUpdate}
-            />
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "flex-end",
-              }}>
-              <Button size={"sm"} onClick={() => setShowCharts(!showCharts)}>
-                {showCharts ? "Hide Charts" : "Show Charts"}
+    <CssVarsProvider theme={theme}>
+      <main className={styles.main}>
+        <div className={styles.body}>
+          <div className={styles["body__content"]}>
+            <div className={styles["body__filter-bar"]}>
+              <Button size={"sm"} onClick={resetFilter}>
+                Reset Filter
               </Button>
+              <FilterSelect
+                filter={filter}
+                filterType="rating"
+                handleFilterUpdate={handleFilterUpdate}
+              />
+              <FilterSelect
+                filter={filter}
+                filterType="sector"
+                handleFilterUpdate={handleFilterUpdate}
+              />
+              <FilterSelect
+                filter={filter}
+                filterType="state"
+                handleFilterUpdate={handleFilterUpdate}
+              />
+              <FilterSelect
+                filter={filter}
+                filterType="taxStatus"
+                handleFilterUpdate={handleFilterUpdate}
+              />
+              <FilterSelect
+                filter={filter}
+                filterType="offeringType"
+                handleFilterUpdate={handleFilterUpdate}
+              />
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                }}>
+                <Button size={"sm"} onClick={() => setShowCharts(!showCharts)}>
+                  {showCharts ? "Hide Charts" : "Show Charts"}
+                </Button>
+              </div>
             </div>
-          </div>
-          <div className={styles["body__nonscrolling-area"]}>
-            <Row fr={2}>
-              <Cell>
-                <DealTable
-                  dealData={filteredDeals.byIntersection}
-                  handleFilterUpdate={handleToggleFilterValue}
-                  filter={filter}
-                />
-              </Cell>
-            </Row>
-            <Row fr={1} maxHeight={"16rem"}>
-              <Column fr={2}>
+            <div className={styles["body__nonscrolling-area"]}>
+              <Row fr={2}>
                 <Cell>
-                  <CalendarTotals
-                    unfilteredData={preparedDeals}
-                    filteredData={filteredDeals.byIntersection}
+                  <DealTable
+                    dealData={filteredDeals.byIntersection}
+                    handleFilterUpdate={handleToggleFilterValue}
                     filter={filter}
-                    handleFilterUpdate={handleFilterUpdate}
                   />
                 </Cell>
-              </Column>
-              <Column fr={5}>
-                <Cell>
-                  <MaturityBreakdown
-                    unfilteredData={maturityData}
-                    filteredData={filteredMaturities}
-                  />
-                </Cell>
-              </Column>
-            </Row>
-          </div>
-          <div
-            className={styles["body__scrolling-area"]}
-            style={{ flex: showCharts ? 2 : 0 }}>
-            <Column fr={1}>
-              <Row fr={1}>
+              </Row>
+              <Row fr={1} maxHeight={"16rem"}>
                 <Column fr={2}>
-                  <Row fr={1}>
-                    <Column fr={1}>
-                      <Cell>
-                        <RatingsCard
-                          unfilteredData={preparedDeals}
-                          filteredData={filteredDeals.byIntersection}
-                          handleFilterUpdate={handleToggleFilterValue}
-                          filter={filter}
-                        />
-                      </Cell>
-                    </Column>
-                  </Row>
-                  <Row fr={1}>
-                    <Column fr={1}>
-                      <Cell>
-                        <SectorCard
-                          unfilteredData={preparedDeals}
-                          filteredData={filteredDeals.byIntersection}
-                          handleFilterUpdate={handleToggleFilterValue}
-                          filter={filter}
-                        />
-                      </Cell>
-                    </Column>
-                  </Row>
-                </Column>
-                <Column fr={1}>
                   <Cell>
-                    <MapCard
+                    <CalendarTotals
                       unfilteredData={preparedDeals}
                       filteredData={filteredDeals.byIntersection}
-                      handleFilterUpdate={handleToggleFilterValue}
                       filter={filter}
+                      handleFilterUpdate={handleFilterUpdate}
+                    />
+                  </Cell>
+                </Column>
+                <Column fr={5}>
+                  <Cell>
+                    <MaturityBreakdown
+                      unfilteredData={maturityData}
+                      filteredData={filteredMaturities}
                     />
                   </Cell>
                 </Column>
               </Row>
-            </Column>
+            </div>
+            <div
+              className={styles["body__scrolling-area"]}
+              style={{ flex: showCharts ? 2 : 0 }}>
+              <Column fr={1}>
+                <Row fr={1}>
+                  <Column fr={2}>
+                    <Row fr={1}>
+                      <Column fr={1}>
+                        <Cell>
+                          <RatingsCard
+                            unfilteredData={preparedDeals}
+                            filteredData={filteredDeals.byIntersection}
+                            handleFilterUpdate={handleToggleFilterValue}
+                            filter={filter}
+                          />
+                        </Cell>
+                      </Column>
+                    </Row>
+                    <Row fr={1}>
+                      <Column fr={1}>
+                        <Cell>
+                          <SectorCard
+                            unfilteredData={preparedDeals}
+                            filteredData={filteredDeals.byIntersection}
+                            handleFilterUpdate={handleToggleFilterValue}
+                            filter={filter}
+                          />
+                        </Cell>
+                      </Column>
+                    </Row>
+                  </Column>
+                  <Column fr={1}>
+                    <Cell>
+                      <MapCard
+                        unfilteredData={preparedDeals}
+                        filteredData={filteredDeals.byIntersection}
+                        handleFilterUpdate={handleToggleFilterValue}
+                        filter={filter}
+                      />
+                    </Cell>
+                  </Column>
+                </Row>
+              </Column>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </CssVarsProvider>
   );
 }

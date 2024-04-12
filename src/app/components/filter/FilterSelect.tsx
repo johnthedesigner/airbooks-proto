@@ -39,7 +39,7 @@ const FilterSelect = ({
             renderValue={(selected: any) => (
               <Box sx={{ display: "flex", gap: "0.25rem" }}>
                 {selected.map((selectedOption: any, index: number) => (
-                  <Chip key={index} variant="soft" color="primary">
+                  <Chip key={index} color="primary">
                     {selectedOption.label}
                   </Chip>
                 ))}

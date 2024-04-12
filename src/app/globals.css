@@ -4,6 +4,160 @@
   --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
     "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
     "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+
+  /* Paletteer Color Palettes */
+  --purple-0: #fcf9ff;
+  --purple-1: #f6ebff;
+  --purple-2: #ecd7ff;
+  --purple-3: #e1bfff;
+  --purple-4: #d3a5ff;
+  --purple-5: #c58aff;
+  --purple-6: #b770ff;
+  --purple-7: #a35cef;
+  --purple-8: #904dd8;
+  --purple-9: #763ab7;
+  --purple-10: #6e31af;
+  --purple-11: #5d21a0;
+  --purple-12: #4a108c;
+  --purple-13: #350072;
+  --purple-14: #22004c;
+  --purple-15: #1a003a;
+
+  --blue-0: #f8faff;
+  --blue-1: #e8efff;
+  --blue-2: #d0e0ff;
+  --blue-3: #b2cdff;
+  --blue-4: #91b9ff;
+  --blue-5: #6ea4ff;
+  --blue-6: #4990ff;
+  --blue-7: #3785fb;
+  --blue-8: #196be4;
+  --blue-9: #0659d2;
+  --blue-10: #004db9;
+  --blue-11: #004098;
+  --blue-12: #003479;
+  --blue-13: #002655;
+  --blue-14: #001734;
+  --blue-15: #001125;
+
+  --turquoise-0: #eafeff;
+  --turquoise-1: #a8feff;
+  --turquoise-2: #0ff9ed;
+  --turquoise-3: #08e3d6;
+  --turquoise-4: #01c9bd;
+  --turquoise-5: #00b7ab;
+  --turquoise-6: #00a397;
+  --turquoise-7: #009186;
+  --turquoise-8: #007f75;
+  --turquoise-9: #006d64;
+  --turquoise-10: #005e56;
+  --turquoise-11: #004f47;
+  --turquoise-12: #003f39;
+  --turquoise-13: #002d29;
+  --turquoise-14: #001c19;
+  --turquoise-15: #001412;
+
+  --green-0: #eafff5;
+  --green-1: #b6ffd8;
+  --green-2: #2cff83;
+  --green-3: #14ea6a;
+  --green-4: #0acb57;
+  --green-5: #00be4b;
+  --green-6: #00aa42;
+  --green-7: #00953a;
+  --green-8: #008432;
+  --green-9: #00722b;
+  --green-10: #006225;
+  --green-11: #00511e;
+  --green-12: #004118;
+  --green-13: #002f11;
+  --green-14: #001e0a;
+  --green-15: #001307;
+
+  --yellow-0: #fffbe4;
+  --yellow-1: #fff0ad;
+  --yellow-2: #fada67;
+  --yellow-3: #ebc850;
+  --yellow-4: #d9b438;
+  --yellow-5: #c7a122;
+  --yellow-6: #b38c0e;
+  --yellow-7: #a37c01;
+  --yellow-8: #8f6c00;
+  --yellow-9: #7d5e00;
+  --yellow-10: #6b5000;
+  --yellow-11: #594200;
+  --yellow-12: #473500;
+  --yellow-13: #332500;
+  --yellow-14: #1f1600;
+  --yellow-15: #140f00;
+
+  --orange-0: #fff9f2;
+  --orange-1: #ffedd5;
+  --orange-2: #ffd9ab;
+  --orange-3: #ffc07a;
+  --orange-4: #ffa346;
+  --orange-5: #ff8717;
+  --orange-6: #e86f00;
+  --orange-7: #cf6100;
+  --orange-8: #b85500;
+  --orange-9: #9e4800;
+  --orange-10: #8a3e00;
+  --orange-11: #733300;
+  --orange-12: #5c2800;
+  --orange-13: #421d00;
+  --orange-14: #291100;
+  --orange-15: #1c0c00;
+
+  --red-0: #fff9f7;
+  --red-1: #ffebe6;
+  --red-2: #ffd6cd;
+  --red-3: #ffbcaf;
+  --red-4: #ff9e8d;
+  --red-5: #ff7e6a;
+  --red-6: #fe5d47;
+  --red-7: #ec442e;
+  --red-8: #d82b15;
+  --red-9: #c31501;
+  --red-10: #a71000;
+  --red-11: #8e0d00;
+  --red-12: #720a00;
+  --red-13: #530600;
+  --red-14: #370400;
+  --red-15: #280300;
+
+  --magenta-0: #fff8fd;
+  --magenta-1: #ffe9f8;
+  --magenta-2: #ffd2f0;
+  --magenta-3: #ffb5e8;
+  --magenta-4: #ff94df;
+  --magenta-5: #f96ed2;
+  --magenta-6: #ec5ac4;
+  --magenta-7: #da41b1;
+  --magenta-8: #c92b9e;
+  --magenta-9: #b4158a;
+  --magenta-10: #a00378;
+  --magenta-11: #860065;
+  --magenta-12: #6d0052;
+  --magenta-13: #51003e;
+  --magenta-14: #350029;
+  --magenta-15: #28001f;
+
+  --grayscale-0: #f9faff;
+  --grayscale-1: #ebeeff;
+  --grayscale-2: #d9ddf3;
+  --grayscale-3: #c7cbe4;
+  --grayscale-4: #b3b8d2;
+  --grayscale-5: #9da2be;
+  --grayscale-6: #8b90ac;
+  --grayscale-7: #7c819d;
+  --grayscale-8: #6b708b;
+  --grayscale-9: #5d627b;
+  --grayscale-10: #4d526a;
+  --grayscale-11: #40455a;
+  --grayscale-12: #383c50;
+  --grayscale-13: #222639;
+  --grayscale-14: #141727;
+  --grayscale-15: #0d101d;
 }
 
 * {
@@ -17,6 +171,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  color: var(--grayscale-12);
 }
 
 a {

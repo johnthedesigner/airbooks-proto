@@ -9,6 +9,7 @@ import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./RatingsCard.module.css";
 import { stateNameFromAbbrev } from "@/utils/stateUtils";
+import { palettes } from "@/utils/colorUtils";
 
 interface chartProps {
   unfilteredData: any;
@@ -62,13 +63,15 @@ const MapCard = ({
       })
     )
     .range([
-      "#ffad9f",
-      "#ff8a75",
-      "#ff5533",
-      "#e2492d",
-      "#be3d26",
-      "#9a311f",
-      "#782618",
+      palettes.red[2],
+      palettes.red[3],
+      palettes.red[4],
+      palettes.red[5],
+      palettes.red[6],
+      palettes.red[7],
+      palettes.red[8],
+      palettes.red[9],
+      palettes.red[10],
     ]);
 
   const handleClick = (data: any, index: number) => {
@@ -93,7 +96,12 @@ const MapCard = ({
                     }}
                     key={geo.rsmKey}
                     geography={geo}
-                    fill={cur ? (colorScale(cur.dealCount) as string) : "#EEE"}
+                    stroke={"rgba(0,0,0,.1"}
+                    fill={
+                      cur
+                        ? (colorScale(cur.dealCount) as string)
+                        : palettes.grayscale[1]
+                    }
                   />
                 );
               })

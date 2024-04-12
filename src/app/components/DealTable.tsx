@@ -5,6 +5,7 @@ import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./DealTable.module.css";
 import { numberFormat, singleValue } from "@/utils/dataUtils";
+import { palettes } from "@/utils/colorUtils";
 
 interface tableProps {
   dealData: any;
@@ -35,10 +36,19 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
           minHeight: ".75rem",
           padding: "0.25rem .25rem",
           fontSize: ".75rem",
-          background: _.includes(filter.rating, label) ? "#b6d3ef" : "default",
+          color:
+            label === "-"
+              ? palettes.blue[10]
+              : `${palettes.blue[10]}!important`,
+          background:
+            label != "-"
+              ? _.includes(filter.rating, label)
+                ? palettes.blue[3]
+                : palettes.blue[1]
+              : `${palettes.grayscale[0]}!important`,
         }}
         variant="soft"
-        color="primary"
+        // color="primary"
         disabled={label === "-"}
         onClick={() => handleFilterUpdate("rating", label)}>
         {label}

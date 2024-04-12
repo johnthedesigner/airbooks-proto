@@ -19,6 +19,7 @@ import CardHeader from "./CardHeader";
 import styles from "./RatingsCard.module.css";
 import { Table } from "@mui/joy";
 import { numberFormat } from "@/utils/dataUtils";
+import { palettes } from "@/utils/colorUtils";
 
 interface chartProps {
   unfilteredData: any;
@@ -100,7 +101,7 @@ const CalendarTotals = ({
       {
         name,
         filteredValue,
-        unfilteredValue: unfilteredValue - filteredValue,
+        unfilteredValue,
       },
     ];
   };
@@ -154,8 +155,8 @@ const CalendarTotals = ({
           />
           <YAxis type="category" dataKey="name" hide={true} />
           <Tooltip />
-          <Bar dataKey="filteredValue" stackId="a" fill="#8884d8" />
-          <Bar dataKey="unfilteredValue" stackId="a" fill="#DDDDDD" />
+          <Bar dataKey="filteredValue" stackId="a" fill={palettes.blue[5]} />
+          <Bar dataKey="unfilteredValue" stackId="b" fill={palettes.blue[2]} />
         </BarChart>
       </ResponsiveContainer>
     );
@@ -166,16 +167,16 @@ const CalendarTotals = ({
       <CardHeader label="Calendar Totals" />
       <div className={styles["chart__wrapper"]}>
         <Table
-          hoverRow={true}
+          hoverRow={false}
           noWrap={true}
           size={"sm"}
           sx={{ padding: "0 1rem", width: "100%" }}>
           <thead>
             <tr>
-              <td style={{ width: "30%" }}></td>
-              <td colSpan={2} style={{ width: "70%", textAlign: "left" }}>
-                <b>{filterApplied && `Filtered / `}Total ($Mn)</b>
+              <td colSpan={2} style={{ width: "70%", textAlign: "right" }}>
+                <b>{filterApplied && `Filter / `}Total ($Mn)</b>
               </td>
+              <td></td>
             </tr>
           </thead>
           <tbody>
@@ -262,7 +263,6 @@ const CalendarTotals = ({
               <td>
                 <SparkLine data={totalData} />
               </td>
-              <td></td>
             </tr>
           </tbody>
         </Table>

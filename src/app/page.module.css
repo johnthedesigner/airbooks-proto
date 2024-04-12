@@ -8,7 +8,7 @@
 
 .header {
   height: 3rem;
-  background: #222;
+  background: var(--grayscale-12);
 }
 
 .body {
@@ -30,7 +30,7 @@
   display: flex;
   flex: 3;
   flex-direction: column;
-  border-bottom: #999 solid 1px;
+  border-bottom: var(--grayscale-2) solid 1px;
 }
 
 .body__scrolling-area {
