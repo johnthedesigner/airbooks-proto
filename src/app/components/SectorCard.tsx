@@ -110,9 +110,10 @@ const SectorCard = ({
             />
             <Tooltip />
             <Bar
+              name="Current filter"
               dataKey="filteredPar"
               stackId="a"
-              fill="#FF8042"
+              fill={palettes.orange[5]}
               onClick={handleClick}>
               {assembledData.map((entry, index) => {
                 return (
@@ -129,9 +130,10 @@ const SectorCard = ({
               })}
             </Bar>
             <Bar
+              name="Not in current filter"
               dataKey="parDelta"
               stackId="a"
-              fill="#FF8042"
+              fill={palettes.grayscale[5]}
               onClick={handleClick}>
               {assembledData.map((entry, index) => {
                 return (
@@ -139,8 +141,8 @@ const SectorCard = ({
                     cursor="pointer"
                     fill={
                       _.includes(filter.sector, entry.name)
-                        ? palettes.orange[2]
-                        : palettes.orange[1]
+                        ? palettes.grayscale[3]
+                        : palettes.grayscale[2]
                     }
                     key={`cell-${index}`}
                   />

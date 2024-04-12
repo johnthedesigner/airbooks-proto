@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
 
 import { palettes } from "@/utils/colorUtils";
@@ -99,19 +100,17 @@ const MaturityBreakdown = ({ unfilteredData, filteredData }: chartProps) => {
             <Tooltip />
             {/* <Legend/> */}
             <Bar
+              name="Current filter"
               dataKey="filteredValue"
               stackId="a"
-              fill={palettes.purple[6]}
+              fill={palettes.blue[6]}
             />
             <Bar
+              name="Not in current filter"
               dataKey="unfilteredValue"
               stackId="a"
-              fill={palettes.purple[2]}
+              fill={palettes.grayscale[2]}
             />
-            {/* <Bar dataKey="Fitch" stackId="a" fill="#8884d8" />
-            <Bar dataKey="Kroll" stackId="a" fill="#82ca9d" />
-            <Bar dataKey="Moody's" stackId="a" fill="#FFBB28" />
-            <Bar dataKey="Standard & Poor's" stackId="a" fill="#FF8042" /> */}
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -10,6 +10,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 
 import Card from "./Card";
@@ -144,9 +145,10 @@ const RatingsCard = ({
             />
             <Tooltip />
             <Bar
+              name="Current filter"
               dataKey="filteredValue"
               stackId="a"
-              fill="#FF8042"
+              fill={palettes.yellow[3]}
               onClick={handleClick}>
               {assembledMergedData.map((entry, index) => {
                 return (
@@ -163,9 +165,10 @@ const RatingsCard = ({
               })}
             </Bar>
             <Bar
+              name="Not in current filter"
               dataKey="unfilteredValue"
               stackId="a"
-              fill="#FF8042"
+              fill={palettes.grayscale[5]}
               onClick={handleClick}>
               {assembledMergedData.map((entry, index) => {
                 return (
@@ -173,8 +176,8 @@ const RatingsCard = ({
                     cursor="pointer"
                     fill={
                       _.includes(filter.rating, entry.name)
-                        ? palettes.yellow[2]
-                        : palettes.yellow[1]
+                        ? palettes.grayscale[3]
+                        : palettes.grayscale[2]
                     }
                     key={`cell-${index}`}
                   />

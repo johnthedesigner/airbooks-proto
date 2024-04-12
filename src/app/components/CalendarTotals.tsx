@@ -155,8 +155,12 @@ const CalendarTotals = ({
           />
           <YAxis type="category" dataKey="name" hide={true} />
           <Tooltip />
-          <Bar dataKey="filteredValue" stackId="a" fill={palettes.blue[5]} />
-          <Bar dataKey="unfilteredValue" stackId="b" fill={palettes.blue[2]} />
+          <Bar dataKey="filteredValue" stackId="a" fill={palettes.purple[5]} />
+          <Bar
+            dataKey="unfilteredValue"
+            stackId="b"
+            fill={palettes.purple[2]}
+          />
         </BarChart>
       </ResponsiveContainer>
     );
