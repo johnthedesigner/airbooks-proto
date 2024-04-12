@@ -139,7 +139,6 @@ const CalendarTotals = ({
           width={50}
           height={10}
           layout="vertical"
-          syncId="calendarTotalsChart"
           data={data}
           margin={{
             top: 0,
@@ -154,7 +153,6 @@ const CalendarTotals = ({
             hide={true}
           />
           <YAxis type="category" dataKey="name" hide={true} />
-          <Tooltip />
           <Bar dataKey="filteredValue" stackId="a" fill={palettes.purple[5]} />
           <Bar
             dataKey="unfilteredValue"

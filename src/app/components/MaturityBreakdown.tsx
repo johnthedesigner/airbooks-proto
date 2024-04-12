@@ -97,7 +97,11 @@ const MaturityBreakdown = ({ unfilteredData, filteredData }: chartProps) => {
                 return numberFormat(Number(value), "par-axis") || "";
               }}
             />
-            <Tooltip />
+            <Tooltip
+              formatter={(value: number) => {
+                return `${numberFormat(value, "par-axis")}Mn`;
+              }}
+            />
             {/* <Legend/> */}
             <Bar
               name="Current filter"
