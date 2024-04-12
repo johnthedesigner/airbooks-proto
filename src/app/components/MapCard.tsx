@@ -36,7 +36,7 @@ const MapCard = ({
       result || (result = {});
       if (!result[state]) result[state] = 0;
       // Add up the par amounts to get a total by rating
-      result[state] = Number(result[state]) + Number(value["Par ($M)"]);
+      result[state] = Number(result[state]) + Number(value["Filtered Par"]);
       return result;
     },
     {}
@@ -77,7 +77,7 @@ const MapCard = ({
 
   return (
     <Card>
-      <CardHeader label="Total Par by State ($M)" />
+      <CardHeader label="Total Par by State" />
       <div className={styles["chart__wrapper"]}>
         <ComposableMap projection="geoAlbersUsa">
           <Geographies geography={geoUrl}>

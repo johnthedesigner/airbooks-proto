@@ -4,7 +4,7 @@ import { Box, Button } from "@mui/joy";
 import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./DealTable.module.css";
-import { singleValue } from "@/utils/dataUtils";
+import { numberFormat, singleValue } from "@/utils/dataUtils";
 
 interface tableProps {
   dealData: any;
@@ -15,17 +15,18 @@ interface tableProps {
 const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
   const columns = [
     "Date",
-    "Issuer",
     "Issue Description",
     "Par ($M)",
     "State",
     "Tax Status",
+    "Offering Type",
     "Rating",
+    "Sector",
+    "Lead Manager",
   ];
 
   const RatingButton = ({ label }: any) => {
     label = label === "Not Rated" ? "-" : label;
-    console.log(label);
     return (
       <Button
         size={"sm"}
@@ -95,10 +96,8 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
                   padding: ".25rem",
                 }}>
                 {_.map(columns, (columnName: string, index: number) => {
-                  console.log("CHECK COLUMN NAME", columnName);
                   if (columnName === "Rating") {
                     // For ratings cluster
-                    console.log("CHECK TABLE RATINGS", deal.moodysNormal);
                     return (
                       <div key={index} className={styles["table__cell--body"]}>
                         <Box sx={{ display: "flex", gap: "0.25rem" }}>
@@ -107,6 +106,21 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
                           <RatingButton label={deal.fitchNormal} />
                           <RatingButton label={deal.krollNormal} />
                         </Box>
+                      </div>
+                    );
+                  } else if (columnName === "Par ($M)") {
+                    // For regular par amount column
+                    return (
+                      <div
+                        key={index}
+                        className={styles["table__cell--body"]}
+                        style={{ justifyContent: "flex-end" }}>
+                        <span className={styles["table__text"]}>
+                          {numberFormat(
+                            Number(singleValue(deal[columnName])),
+                            "par-table"
+                          )}
+                        </span>
                       </div>
                     );
                   } else {

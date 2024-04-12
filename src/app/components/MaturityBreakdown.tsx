@@ -15,6 +15,7 @@ import {
 import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./MaturityBreakdown.module.css";
+import { numberFormat } from "@/utils/dataUtils";
 
 interface chartProps {
   unfilteredData: any;
@@ -37,7 +38,7 @@ const MaturityBreakdown = ({ unfilteredData, filteredData }: chartProps) => {
       .groupBy("Structure")
       .map((objs: any, key: string) => ({
         name: key,
-        par: _.sumBy(objs, "Par ($M)"),
+        par: _.sumBy(objs, "Filtered Par"),
       }))
       .value();
     return parByMaturity;
@@ -67,7 +68,7 @@ const MaturityBreakdown = ({ unfilteredData, filteredData }: chartProps) => {
 
   return (
     <Card>
-      <CardHeader label="Total Par by Maturity ($M)" />
+      <CardHeader label="Total Par by Maturity ($Mn)" />
       <div className={styles["chart__wrapper"]}>
         <ResponsiveContainer
           width="100%"
@@ -85,9 +86,13 @@ const MaturityBreakdown = ({ unfilteredData, filteredData }: chartProps) => {
             }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
-            <YAxis />
+            <YAxis
+              tickFormatter={(value: any) => {
+                return numberFormat(Number(value), "par-axis") || "";
+              }}
+            />
             <Tooltip />
-            {/* <Legend /> */}
+            {/* <Legend/> */}
             <Bar dataKey="filteredValue" stackId="a" fill="#8884d8" />
             <Bar dataKey="unfilteredValue" stackId="a" fill="#DDDDDD" />
             {/* <Bar dataKey="Fitch" stackId="a" fill="#8884d8" />

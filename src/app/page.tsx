@@ -25,6 +25,7 @@ import { mapRatings } from "@/utils/ratingUtils";
 import FilterSelect from "./components/filter/FilterSelect";
 import { Button } from "@mui/joy";
 import MapCard from "./components/MapCard";
+import CalendarTotals from "./components/CalendarTotals";
 
 export default function Home() {
   var filteredDealsInitialState = {
@@ -105,6 +106,11 @@ export default function Home() {
               filterType="taxStatus"
               handleFilterUpdate={handleFilterUpdate}
             />
+            <FilterSelect
+              filter={filter}
+              filterType="offeringType"
+              handleFilterUpdate={handleFilterUpdate}
+            />
             <div
               style={{
                 flex: 1,
@@ -127,13 +133,25 @@ export default function Home() {
                 />
               </Cell>
             </Row>
-            <Row fr={1} maxHeight={"12rem"}>
-              <Cell>
-                <MaturityBreakdown
-                  unfilteredData={maturityData}
-                  filteredData={filteredMaturities}
-                />
-              </Cell>
+            <Row fr={1} maxHeight={"16rem"}>
+              <Column fr={2}>
+                <Cell>
+                  <CalendarTotals
+                    unfilteredData={preparedDeals}
+                    filteredData={filteredDeals.byIntersection}
+                    filter={filter}
+                    handleFilterUpdate={handleFilterUpdate}
+                  />
+                </Cell>
+              </Column>
+              <Column fr={5}>
+                <Cell>
+                  <MaturityBreakdown
+                    unfilteredData={maturityData}
+                    filteredData={filteredMaturities}
+                  />
+                </Cell>
+              </Column>
             </Row>
           </div>
           <div

@@ -7,6 +7,7 @@ export const filterState = {
   sector: [],
   state: [],
   taxStatus: [],
+  offeringType: [],
 };
 
 // Interface for managing filter state
@@ -15,6 +16,7 @@ export interface filterStateInterface {
   sector?: string[];
   state?: string[];
   taxStatus?: string[];
+  offeringType?: string[];
 }
 
 export interface filterItemInterface {
@@ -28,6 +30,7 @@ export interface filterListInterface {
   sector: filterItemInterface;
   state: filterItemInterface;
   taxStatus: filterItemInterface;
+  offeringType: filterItemInterface;
 }
 
 export const filterList: filterListInterface = {
@@ -150,6 +153,14 @@ export const filterList: filterListInterface = {
       { label: "AMT", value: "AMT" },
     ],
   },
+  offeringType: {
+    label: "Offering Type",
+    key: "offeringType",
+    options: [
+      { label: "Negotiated", value: "Negotiated" },
+      { label: "Competitive", value: "Competitive" },
+    ],
+  },
 };
 
 export const updateFilter = (filter: any, key: string, value: any) => {
@@ -244,11 +255,22 @@ export const applyDealFilters = async (deals: any, filter: any) => {
     })
     .value();
 
+  // Get deals filtered by offering type
+  let byOfferingType = await _(deals)
+    .filter((deal: any) => {
+      return (
+        filter.offeringType.length === 0 ||
+        _.includes(filter.offeringType, singleValue(deal["Offering Type"]))
+      );
+    })
+    .value();
+
   let byIntersection = await _.intersection(
     byRating,
     bySector,
     byState,
-    byTaxStatus
+    byTaxStatus,
+    byOfferingType
   );
 
   return {
@@ -257,6 +279,7 @@ export const applyDealFilters = async (deals: any, filter: any) => {
     bySector,
     byState,
     byTaxStatus,
+    byOfferingType,
     byIntersection,
   };
 };

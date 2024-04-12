@@ -16,6 +16,7 @@ import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./RatingsCard.module.css";
 import { mapRating } from "@/utils/ratingUtils";
+import { numberFormat } from "@/utils/dataUtils";
 
 interface chartProps {
   unfilteredData: any;
@@ -61,7 +62,7 @@ const RatingsCard = ({
         if (!result[value[ratingKey]]) result[value[ratingKey]] = 0;
         // Add up the par amounts to get a total by rating
         result[value[ratingKey]] =
-          Number(result[value[ratingKey]]) + Number(value["Par ($M)"]);
+          Number(result[value[ratingKey]]) + Number(value["Filtered Par"]);
         return result;
       },
       {}
@@ -113,7 +114,7 @@ const RatingsCard = ({
 
   return (
     <Card>
-      <CardHeader label="Total Par by Rating ($M)" />
+      <CardHeader label="Total Par by Rating ($Mn)" />
       <div className={styles["chart__wrapper"]}>
         <ResponsiveContainer
           width="100%"
@@ -131,7 +132,11 @@ const RatingsCard = ({
             }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
-            <YAxis />
+            <YAxis
+              tickFormatter={(value: any) => {
+                return numberFormat(Number(value), "par-axis") || "";
+              }}
+            />
             <Tooltip />
             <Bar
               dataKey="filteredValue"
