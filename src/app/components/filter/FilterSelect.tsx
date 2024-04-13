@@ -1,9 +1,10 @@
 import _ from "lodash";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
-import { Box, Chip, FormControl, FormLabel } from "@mui/joy";
+import { Box, Chip, FormControl, FormLabel, IconButton } from "@mui/joy";
 
 import { filterList } from "@/utils/filterUtils";
+import { CloseRounded } from "@mui/icons-material";
 
 interface filterProps {
   filter: any;
@@ -36,6 +37,16 @@ const FilterSelect = ({
             size={"sm"}
             placeholder={`Filter by ${filterList[filterType].label}`}
             onChange={handleChange}
+            endDecorator={
+              filter[filterType].length > 0 && (
+                <IconButton
+                  onClick={(e) => {
+                    handleChange(e, []);
+                  }}>
+                  <CloseRounded />
+                </IconButton>
+              )
+            }
             renderValue={(selected: any) => (
               <Box sx={{ display: "flex", gap: "0.25rem" }}>
                 {selected.map((selectedOption: any, index: number) => (

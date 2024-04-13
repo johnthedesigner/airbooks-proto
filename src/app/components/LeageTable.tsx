@@ -86,7 +86,6 @@ const LeagueTable = ({
   };
 
   const SparkLine = ({ data, scale }: any) => {
-    console.log("TEST SPARKLINE", data);
     return (
       <ResponsiveContainer width="100%" height="100%">
         <BarChart

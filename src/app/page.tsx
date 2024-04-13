@@ -2,10 +2,13 @@
 import { useEffect, useState } from "react";
 import _ from "lodash";
 import { CssVarsProvider } from "@mui/joy/styles";
+import { Button, ButtonGroup, IconButton, FormLabel, Divider } from "@mui/joy";
+import SyncRoundedIcon from "@mui/icons-material/SyncRounded";
 
 import { theme } from "@/utils/colorUtils";
-import dealData from "../data/deals.json";
-import maturityData from "../data/maturities.json";
+import { calendarData } from "@/utils/dataUtils";
+// import dealData20240318 from "../data/deals-2024-3-18.json";
+// import maturityData20240318 from "../data/maturities-2024-3-18.json";
 import {
   applyFilters,
   updateFilter,
@@ -25,10 +28,10 @@ import SectorCard from "./components/SectorCard";
 import MaturityBreakdown from "./components/MaturityBreakdown";
 import { mapRatings } from "@/utils/ratingUtils";
 import FilterSelect from "./components/filter/FilterSelect";
-import { Button, ButtonGroup, FormLabel } from "@mui/joy";
 import MapCard from "./components/MapCard";
 import CalendarTotals from "./components/CalendarTotals";
 import LeagueTable from "./components/LeageTable";
+import WeekSelector from "./components/filter/WeekSelector";
 
 export default function Home() {
   var filteredDealsInitialState = {
@@ -40,19 +43,22 @@ export default function Home() {
   };
 
   const [viewMode, setViewMode] = useState("combo");
+  const [selectedWeek, setSelectedWeek] = useState(0);
   const [filter, setFilter] = useState<filterStateInterface>(filterState);
   const [filteredMaturities, setFilteredMaturities] = useState(new Array());
   const [filteredDeals, setFilteredDeals] = useState(filteredDealsInitialState);
-
-  // map rating data into consistent categories
-  let preparedDeals = mapRatings(dealData);
+  const [unfilteredDeals, setUnfilteredDeals] = useState(new Array());
+  const [unfilteredMaturities, setUnfilteredMaturities] = useState(new Array());
+  const [filterApplied, setFilterApplied] = useState(false);
 
   useEffect(() => {
+    // Get the right week's data
+    const weekData = calendarData.weeks[selectedWeek];
     // Get freshly filtered deals and maturities when filter is updated
     const getFilteredData = async () => {
       let filteredData = await applyFilters(
-        preparedDeals,
-        maturityData,
+        weekData.deals,
+        weekData.maturities,
         filter
       );
       let { byRating, bySector, byState, byTaxStatus, byIntersection } =
@@ -65,9 +71,19 @@ export default function Home() {
         byIntersection,
       });
       setFilteredMaturities(filteredData.filteredMaturities);
+      setUnfilteredDeals(weekData.deals);
+      setUnfilteredMaturities(weekData.maturities);
     };
     getFilteredData();
-  }, [filter]);
+    // Record whether there is an active filter or not
+    let newFilterApplied = false;
+    _.each(filter, (valueArray: any) => {
+      if (valueArray.length > 0) {
+        newFilterApplied = true;
+      }
+    });
+    setFilterApplied(newFilterApplied);
+  }, [filter, selectedWeek]);
 
   const handleFilterUpdate = (key: string, value: any) => {
     setFilter(substituteFilter(filter, key, value));
@@ -87,9 +103,20 @@ export default function Home() {
         <div className={styles.body}>
           <div className={styles["body__content"]}>
             <div className={styles["body__filter-bar"]}>
-              <Button size={"sm"} onClick={resetFilter}>
-                Reset Filter
-              </Button>
+              <WeekSelector
+                selectedWeek={selectedWeek}
+                setSelectedWeek={setSelectedWeek}
+                weeks={calendarData.weeks}
+              />
+              <Divider orientation="vertical" />
+              <IconButton
+                size={"sm"}
+                disabled={!filterApplied}
+                onClick={resetFilter}
+                variant="solid"
+                color="primary">
+                <SyncRoundedIcon />
+              </IconButton>
               <FilterSelect
                 filter={filter}
                 filterType="rating"
@@ -115,6 +142,7 @@ export default function Home() {
                 filterType="offeringType"
                 handleFilterUpdate={handleFilterUpdate}
               />
+              <Divider orientation="vertical" />
               <div
                 style={{
                   flex: 1,
@@ -123,21 +151,24 @@ export default function Home() {
                   justifyContent: "flex-end",
                 }}>
                 <FormLabel sx={{ margin: "0 .5rem" }}>View Mode</FormLabel>
-                <ButtonGroup size={"sm"}>
+                <ButtonGroup size={"sm"} color="primary">
                   <Button
                     variant={viewMode === "table" ? "solid" : undefined}
+                    color="primary"
                     size={"sm"}
                     onClick={() => setViewMode("table")}>
                     Table
                   </Button>
                   <Button
                     variant={viewMode === "charts" ? "solid" : undefined}
+                    color="primary"
                     size={"sm"}
                     onClick={() => setViewMode("charts")}>
                     Charts
                   </Button>
                   <Button
                     variant={viewMode === "combo" ? "solid" : undefined}
+                    color="primary"
                     size={"sm"}
                     onClick={() => setViewMode("combo")}>
                     Both
@@ -171,7 +202,7 @@ export default function Home() {
                 <Row fr={1} maxHeight={"16rem"}>
                   <Cell>
                     <MaturityBreakdown
-                      unfilteredData={maturityData}
+                      unfilteredData={unfilteredMaturities}
                       filteredData={filteredMaturities}
                     />
                   </Cell>
@@ -182,7 +213,7 @@ export default function Home() {
                       <Column fr={1}>
                         <Cell>
                           <CalendarTotals
-                            unfilteredData={preparedDeals}
+                            unfilteredData={unfilteredDeals}
                             filteredData={filteredDeals.byIntersection}
                             filter={filter}
                             handleFilterUpdate={handleFilterUpdate}
@@ -192,7 +223,7 @@ export default function Home() {
                       <Column fr={2}>
                         <Cell>
                           <LeagueTable
-                            unfilteredData={preparedDeals}
+                            unfilteredData={unfilteredDeals}
                             filteredData={filteredDeals.byIntersection}
                             filter={filter}
                             handleFilterUpdate={handleFilterUpdate}
@@ -204,7 +235,7 @@ export default function Home() {
                       <Column fr={1}>
                         <Cell>
                           <RatingsCard
-                            unfilteredData={preparedDeals}
+                            unfilteredData={unfilteredDeals}
                             filteredData={filteredDeals.byIntersection}
                             handleFilterUpdate={handleToggleFilterValue}
                             filter={filter}
@@ -216,7 +247,7 @@ export default function Home() {
                   <Column fr={1}>
                     <Cell>
                       <MapCard
-                        unfilteredData={preparedDeals}
+                        unfilteredData={unfilteredDeals}
                         filteredData={filteredDeals.byIntersection}
                         handleFilterUpdate={handleToggleFilterValue}
                         filter={filter}
@@ -227,7 +258,7 @@ export default function Home() {
                 <Row fr={1}>
                   <Cell>
                     <SectorCard
-                      unfilteredData={preparedDeals}
+                      unfilteredData={unfilteredDeals}
                       filteredData={filteredDeals.byIntersection}
                       handleFilterUpdate={handleToggleFilterValue}
                       filter={filter}
