@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 interface stateListInterface {
   [key: string]: string;
 }
@@ -66,4 +68,11 @@ export const stateList: stateListInterface = {
 
 export const stateNameFromAbbrev = (abbrev: string) => {
   return stateList[abbrev];
+};
+
+export const stateAbbrevFromName = (name: string) => {
+  let abbrev = _.findKey(stateList, (stateName: string) => {
+    return name === stateName;
+  });
+  return abbrev;
 };

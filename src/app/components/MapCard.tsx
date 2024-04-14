@@ -8,7 +8,7 @@ import { scaleLinear, scaleQuantile } from "d3-scale";
 import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./RatingsCard.module.css";
-import { stateNameFromAbbrev } from "@/utils/stateUtils";
+import { stateAbbrevFromName, stateNameFromAbbrev } from "@/utils/stateUtils";
 import { palettes } from "@/utils/colorUtils";
 
 interface chartProps {
@@ -24,27 +24,28 @@ const MapCard = ({
   handleFilterUpdate,
   filter,
 }: chartProps) => {
-  // const dataByState = _.countBy(chartData, (deal: any) => {
-  //   return deal["State"];
-  // });
   // Sum par amount by state
-  let parTotalsByState = _.reduce(
-    filteredData,
-    (result: any, value: any) => {
-      // Get current state
-      let state = value["State"];
-      // Make sure we have a result object and property to start with
-      result || (result = {});
-      if (!result[state]) result[state] = 0;
-      // Add up the par amounts to get a total by rating
-      result[state] = Number(result[state]) + Number(value["Filtered Par"]);
-      return result;
-    },
-    {}
-  );
+  const getParTotalsByState = (data: any) => {
+    return _.reduce(
+      data,
+      (result: any, value: any) => {
+        // Get current state
+        let state = value["State"];
+        // Make sure we have a result object and property to start with
+        result || (result = {});
+        if (!result[state]) result[state] = 0;
+        // Add up the par amounts to get a total by rating
+        result[state] = Number(result[state]) + Number(value["Filtered Par"]);
+        return result;
+      },
+      {}
+    );
+  };
+  let filteredParTotalsByState = getParTotalsByState(filteredData);
+  let unfilteredParTotalsByState = getParTotalsByState(unfilteredData);
 
   const assembledData = _.map(
-    parTotalsByState,
+    filteredParTotalsByState,
     (value: any, abbrev: string) => {
       return {
         abbrev,
@@ -56,7 +57,7 @@ const MapCard = ({
 
   const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
-  const colorScale = scaleQuantile<string, number>()
+  const colorScaleA = scaleQuantile<string, number>()
     .domain(
       assembledData.map((d) => {
         return d.dealCount;
@@ -74,6 +75,24 @@ const MapCard = ({
       palettes.red[10],
     ]);
 
+  const colorScaleB = scaleQuantile<string, number>()
+    .domain(
+      assembledData.map((d) => {
+        return d.dealCount;
+      })
+    )
+    .range([
+      palettes.blue[2],
+      palettes.blue[3],
+      palettes.blue[4],
+      palettes.blue[5],
+      palettes.blue[6],
+      palettes.blue[7],
+      palettes.blue[8],
+      palettes.blue[9],
+      palettes.blue[10],
+    ]);
+
   const handleClick = (data: any, index: number) => {
     handleFilterUpdate("rating", data.name);
   };
@@ -89,19 +108,27 @@ const MapCard = ({
                 const cur = assembledData.find(
                   (s) => s.state === geo.properties.name
                 );
+                const isSelected = _.includes(filter.state, cur?.abbrev);
+                let getColor = (value: number) => {
+                  if (cur) {
+                    return colorScaleA(value);
+                  } else {
+                    return palettes.grayscale[1];
+                  }
+                };
                 return (
                   <Geography
                     onClick={(e: any) => {
-                      console.log(e);
+                      handleFilterUpdate(
+                        "state",
+                        stateAbbrevFromName(geo.properties.name)
+                      );
                     }}
+                    name={"TEST"}
                     key={geo.rsmKey}
                     geography={geo}
                     stroke={"rgba(0,0,0,.1"}
-                    fill={
-                      cur
-                        ? (colorScale(cur.dealCount) as string)
-                        : palettes.grayscale[1]
-                    }
+                    fill={getColor(cur?.dealCount) as string}
                   />
                 );
               })
