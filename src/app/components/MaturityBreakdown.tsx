@@ -126,8 +126,8 @@ const MaturityBreakdown = ({
                     cursor="pointer"
                     fill={
                       _.includes(filter.maturities, entry.name)
-                        ? palettes.blue[6]
-                        : palettes.blue[4]
+                        ? palettes.blue[7]
+                        : palettes.blue[5]
                     }
                     key={`cell-${index}`}
                   />

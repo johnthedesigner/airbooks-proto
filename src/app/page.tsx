@@ -2,7 +2,14 @@
 import { useEffect, useState } from "react";
 import _ from "lodash";
 import { CssVarsProvider } from "@mui/joy/styles";
-import { Button, ButtonGroup, IconButton, FormLabel, Divider } from "@mui/joy";
+import {
+  Button,
+  ButtonGroup,
+  IconButton,
+  FormLabel,
+  FormControl,
+  Divider,
+} from "@mui/joy";
 import SyncRoundedIcon from "@mui/icons-material/SyncRounded";
 
 import { theme } from "@/utils/colorUtils";
@@ -118,54 +125,58 @@ export default function Home() {
                 weeks={calendarData.weeks}
               />
               <Divider orientation="vertical" />
-              <IconButton
-                size={"sm"}
-                disabled={!filterApplied}
-                onClick={resetFilter}
-                variant="solid"
-                color="primary">
-                <SyncRoundedIcon />
-              </IconButton>
-              <MaturitySelector
-                filter={filter}
-                unfilteredMaturities={unfilteredMaturities}
-                filteredMaturities={filteredMaturities}
-                handleFilterUpdate={handleFilterUpdate}
-              />
-              <FilterSelect
-                filter={filter}
-                filterType="rating"
-                handleFilterUpdate={handleFilterUpdate}
-              />
-              <FilterSelect
-                filter={filter}
-                filterType="sector"
-                handleFilterUpdate={handleFilterUpdate}
-              />
-              <FilterSelect
-                filter={filter}
-                filterType="state"
-                handleFilterUpdate={handleFilterUpdate}
-              />
-              <FilterSelect
-                filter={filter}
-                filterType="taxStatus"
-                handleFilterUpdate={handleFilterUpdate}
-              />
-              <FilterSelect
-                filter={filter}
-                filterType="offeringType"
-                handleFilterUpdate={handleFilterUpdate}
-              />
-              <Divider orientation="vertical" />
               <div
                 style={{
                   flex: 1,
                   display: "flex",
                   flexDirection: "row",
-                  justifyContent: "flex-end",
+                  alignItems: "flex-end",
+                  gap: "1rem",
+                  overflowX: "scroll",
                 }}>
-                <FormLabel sx={{ margin: "0 .5rem" }}>View Mode</FormLabel>
+                <IconButton
+                  size={"sm"}
+                  disabled={!filterApplied}
+                  onClick={resetFilter}
+                  variant="solid"
+                  color="primary">
+                  <SyncRoundedIcon />
+                </IconButton>
+                <MaturitySelector
+                  filter={filter}
+                  unfilteredMaturities={unfilteredMaturities}
+                  filteredMaturities={filteredMaturities}
+                  handleFilterUpdate={handleFilterUpdate}
+                />
+                <FilterSelect
+                  filter={filter}
+                  filterType="rating"
+                  handleFilterUpdate={handleFilterUpdate}
+                />
+                <FilterSelect
+                  filter={filter}
+                  filterType="sector"
+                  handleFilterUpdate={handleFilterUpdate}
+                />
+                <FilterSelect
+                  filter={filter}
+                  filterType="state"
+                  handleFilterUpdate={handleFilterUpdate}
+                />
+                <FilterSelect
+                  filter={filter}
+                  filterType="taxStatus"
+                  handleFilterUpdate={handleFilterUpdate}
+                />
+                <FilterSelect
+                  filter={filter}
+                  filterType="offeringType"
+                  handleFilterUpdate={handleFilterUpdate}
+                />
+              </div>
+              <Divider orientation="vertical" />
+              <FormControl>
+                <FormLabel>View Mode</FormLabel>
                 <ButtonGroup size={"sm"} color="primary">
                   <Button
                     variant={viewMode === "table" ? "solid" : undefined}
@@ -189,7 +200,7 @@ export default function Home() {
                     Both
                   </Button>
                 </ButtonGroup>
-              </div>
+              </FormControl>
             </div>
             <div
               className={styles["body__nonscrolling-area"]}

@@ -1,7 +1,7 @@
 import _ from "lodash";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
-import { Box, FormControl, IconButton } from "@mui/joy";
+import { Box, FormControl, FormLabel, IconButton } from "@mui/joy";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
@@ -32,6 +32,7 @@ const WeekSelector = ({
     <>
       {true && (
         <FormControl>
+          <FormLabel>Select Week</FormLabel>
           <Select
             value={selectedWeek}
             size={"sm"}
