@@ -32,10 +32,12 @@ import MapCard from "./components/MapCard";
 import CalendarTotals from "./components/CalendarTotals";
 import LeagueTable from "./components/LeageTable";
 import WeekSelector from "./components/filter/WeekSelector";
+import MaturitySelector from "./components/filter/MaturitySelector";
 
 export default function Home() {
   var filteredDealsInitialState = {
     byRating: new Array() as any[],
+    byMaturity: new Array() as any[],
     bySector: new Array() as any[],
     byState: new Array() as any[],
     byTaxStatus: new Array() as any[],
@@ -61,10 +63,17 @@ export default function Home() {
         weekData.maturities,
         filter
       );
-      let { byRating, bySector, byState, byTaxStatus, byIntersection } =
-        filteredData.filteredDeals;
+      let {
+        byRating,
+        byMaturity,
+        bySector,
+        byState,
+        byTaxStatus,
+        byIntersection,
+      } = filteredData.filteredDeals;
       setFilteredDeals({
         byRating,
+        byMaturity,
         bySector,
         byState,
         byTaxStatus,
@@ -117,6 +126,12 @@ export default function Home() {
                 color="primary">
                 <SyncRoundedIcon />
               </IconButton>
+              <MaturitySelector
+                filter={filter}
+                unfilteredMaturities={unfilteredMaturities}
+                filteredMaturities={filteredMaturities}
+                handleFilterUpdate={handleFilterUpdate}
+              />
               <FilterSelect
                 filter={filter}
                 filterType="rating"
@@ -202,8 +217,10 @@ export default function Home() {
                 <Row fr={1} maxHeight={"16rem"}>
                   <Cell>
                     <MaturityBreakdown
+                      filter={filter}
                       unfilteredData={unfilteredMaturities}
                       filteredData={filteredMaturities}
+                      handleFilterUpdate={handleToggleFilterValue}
                     />
                   </Cell>
                 </Row>

@@ -20,11 +20,18 @@ import styles from "./MaturityBreakdown.module.css";
 import { numberFormat } from "@/utils/dataUtils";
 
 interface chartProps {
+  filter: any;
   unfilteredData: any;
   filteredData: any;
+  handleFilterUpdate: Function;
 }
 
-const MaturityBreakdown = ({ unfilteredData, filteredData }: chartProps) => {
+const MaturityBreakdown = ({
+  filter,
+  unfilteredData,
+  filteredData,
+  handleFilterUpdate,
+}: chartProps) => {
   // Build an array of years with total par amounts
   const yearsPresent = _.map(unfilteredData, (maturity: any) => {
     return maturity.Structure;
@@ -68,6 +75,10 @@ const MaturityBreakdown = ({ unfilteredData, filteredData }: chartProps) => {
     });
   });
 
+  const handleClick = (data: any, index: number) => {
+    handleFilterUpdate("maturities", `${data.name}`);
+  };
+
   return (
     <Card>
       <CardHeader label="Total Par by Maturity ($Mn)" />
@@ -108,13 +119,41 @@ const MaturityBreakdown = ({ unfilteredData, filteredData }: chartProps) => {
               dataKey="filteredValue"
               stackId="a"
               fill={palettes.blue[6]}
-            />
+              onClick={handleClick}>
+              {assembledData.map((entry, index) => {
+                return (
+                  <Cell
+                    cursor="pointer"
+                    fill={
+                      _.includes(filter.maturities, entry.name)
+                        ? palettes.blue[6]
+                        : palettes.blue[4]
+                    }
+                    key={`cell-${index}`}
+                  />
+                );
+              })}
+            </Bar>
             <Bar
               name="Not in current filter"
               dataKey="unfilteredValue"
               stackId="a"
               fill={palettes.grayscale[2]}
-            />
+              onClick={handleClick}>
+              {assembledData.map((entry, index) => {
+                return (
+                  <Cell
+                    cursor="pointer"
+                    fill={
+                      _.includes(filter.maturities, entry.name)
+                        ? palettes.grayscale[3]
+                        : palettes.grayscale[2]
+                    }
+                    key={`cell-${index}`}
+                  />
+                );
+              })}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

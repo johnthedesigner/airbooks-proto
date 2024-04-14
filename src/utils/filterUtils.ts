@@ -4,6 +4,7 @@ import { singleValue } from "./dataUtils";
 // Initial filter state
 export const filterState = {
   rating: [],
+  maturities: [],
   sector: [],
   state: [],
   taxStatus: [],
@@ -13,6 +14,7 @@ export const filterState = {
 // Interface for managing filter state
 export interface filterStateInterface {
   rating?: string[];
+  maturities?: string[];
   sector?: string[];
   state?: string[];
   taxStatus?: string[];
@@ -22,11 +24,12 @@ export interface filterStateInterface {
 export interface filterItemInterface {
   label: string;
   key: string;
-  options: any[];
+  options?: any[];
 }
 
 export interface filterListInterface {
   [rating: string]: filterItemInterface;
+  maturities: filterItemInterface;
   sector: filterItemInterface;
   state: filterItemInterface;
   taxStatus: filterItemInterface;
@@ -34,6 +37,10 @@ export interface filterListInterface {
 }
 
 export const filterList: filterListInterface = {
+  maturities: {
+    label: "maturities",
+    key: "maturities",
+  },
   rating: {
     label: "Rating",
     key: "rating",
@@ -225,6 +232,20 @@ export const applyDealFilters = async (deals: any, filter: any) => {
     })
     .value();
 
+  // Get deals filtered by maturity
+  let byMaturity = await _(deals)
+    .filter((deal: any) => {
+      // Make sure Structure is a string
+      let dealStructure = `${deal.Structure}`;
+      // Get an array of maturities from the Structure field
+      let dealMaturities = dealStructure.split(", ");
+      return (
+        filter.maturities.length === 0 ||
+        _.intersection(dealMaturities, filter.maturities).length > 0
+      );
+    })
+    .value();
+
   // Get deals filtered by sector
   let bySector = await _(deals)
     .filter((deal: any) => {
@@ -267,6 +288,7 @@ export const applyDealFilters = async (deals: any, filter: any) => {
 
   let byIntersection = await _.intersection(
     byRating,
+    byMaturity,
     bySector,
     byState,
     byTaxStatus,
@@ -276,6 +298,7 @@ export const applyDealFilters = async (deals: any, filter: any) => {
   return {
     allDeals: filteredDeals,
     byRating,
+    byMaturity,
     bySector,
     byState,
     byTaxStatus,
@@ -292,7 +315,7 @@ export const applyFilters = async (
   // Filter deals based on current filter values
   let filteredDeals = await applyDealFilters(deals, filter);
   // Get the indexes of the resulting list of deals
-  let dealIndexes = await _.map(filteredDeals.allDeals, (deal: any) => {
+  let dealIndexes = await _.map(filteredDeals.byIntersection, (deal: any) => {
     return deal.Index;
   });
   // Filter maturities to only those from the filtered deals
