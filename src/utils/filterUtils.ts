@@ -7,6 +7,7 @@ export const filterState = {
   maturities: [],
   sector: [],
   state: [],
+  leadManager: [],
   taxStatus: [],
   offeringType: [],
 };
@@ -17,6 +18,7 @@ export interface filterStateInterface {
   maturities?: string[];
   sector?: string[];
   state?: string[];
+  leadManager?: string[];
   taxStatus?: string[];
   offeringType?: string[];
 }
@@ -32,14 +34,19 @@ export interface filterListInterface {
   maturities: filterItemInterface;
   sector: filterItemInterface;
   state: filterItemInterface;
+  leadManager: filterItemInterface;
   taxStatus: filterItemInterface;
   offeringType: filterItemInterface;
 }
 
 export const filterList: filterListInterface = {
   maturities: {
-    label: "maturities",
+    label: "Maturities",
     key: "maturities",
+  },
+  leadManager: {
+    label: "Lead Manager",
+    key: "leadManager",
   },
   rating: {
     label: "Rating",
@@ -266,6 +273,16 @@ export const applyDealFilters = async (deals: any, filter: any) => {
     })
     .value();
 
+  // Get deals filtered by state
+  let byLeadManager = await _(deals)
+    .filter((deal: any) => {
+      return (
+        filter.leadManager.length === 0 ||
+        _.includes(filter.leadManager, singleValue(deal["Lead Manager"]))
+      );
+    })
+    .value();
+
   // Get deals filtered by tax status
   let byTaxStatus = await _(deals)
     .filter((deal: any) => {
@@ -291,6 +308,7 @@ export const applyDealFilters = async (deals: any, filter: any) => {
     byMaturity,
     bySector,
     byState,
+    byLeadManager,
     byTaxStatus,
     byOfferingType
   );
@@ -301,6 +319,7 @@ export const applyDealFilters = async (deals: any, filter: any) => {
     byMaturity,
     bySector,
     byState,
+    byLeadManager,
     byTaxStatus,
     byOfferingType,
     byIntersection,

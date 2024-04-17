@@ -25,10 +25,10 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
     { name: "Date", width: 90 },
     { name: "Issue Description", width: 240 },
     { name: "Par ($M)", width: 90 },
-    { name: "State", width: 50 },
+    { name: "State", width: 90 },
     { name: "Tax Status", width: 90 },
     { name: "Offering Type", width: 100 },
-    { name: "Rating", width: 200 },
+    { name: "Rating", width: 230 },
     { name: "Structure", width: 200 },
     { name: "Sector", width: 120 },
     { name: "Lead Manager", width: 200 },
@@ -64,7 +64,7 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
     //     {list[rowIndex][columnIndex]}
     //   </div>
     // );
-    if (rowIndex === 0) {
+    if (rowIndex === 0 && false) {
       // Render header cells
       return (
         <div
@@ -97,6 +97,7 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
               ...style,
               // width: "fit-content",
               width: columns[columnIndex].width,
+              minWidth: columns[columnIndex].width,
               background: isHovered ? palettes.grayscale[0] : "white",
             }}>
             <Box sx={{ display: "flex", gap: "0.25rem" }}>
@@ -123,6 +124,7 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
               ...style,
               // width: "max-content",
               width: columns[columnIndex].width,
+              minWidth: columns[columnIndex].width,
               justifyContent: "flex-end",
               background: isHovered ? palettes.grayscale[0] : "white",
             }}>
@@ -147,6 +149,7 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
               ...style,
               // width: "max-content",
               width: columns[columnIndex].width,
+              minWidth: columns[columnIndex].width,
               justifyContent: "flex-end",
               background: isHovered ? palettes.grayscale[0] : "white",
             }}>
@@ -169,6 +172,7 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
               ...style,
               // width: "max-content",
               width: columns[columnIndex].width,
+              minWidth: columns[columnIndex].width,
               background: isHovered ? palettes.grayscale[0] : "white",
             }}>
             <span className={styles["table__text"]}>
@@ -336,9 +340,33 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
           overflow: "auto",
           position: "relative",
         }}>
-        <div style={{ position: "absolute", inset: 0 }}>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+          }}>
+          <div
+            className={styles["table__header"]}
+            style={{ width: tableWidth }}>
+            {_.map(columns, (column: any) => {
+              return (
+                <div
+                  key={column.name}
+                  className={styles["table__cell--header"]}
+                  style={{
+                    width: column.width,
+                    // position: "sticky",
+                    // top: 0,
+                  }}>
+                  <span className={styles["table__text"]}>{column.name}</span>
+                </div>
+              );
+            })}
+          </div>
           <Grid
-            autoContainerWidth={true}
+            // autoContainerWidth={true}
             // autoWidth={true}
             // autoHeight={true}
             cellRenderer={cellRenderer}

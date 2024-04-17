@@ -40,6 +40,7 @@ import CalendarTotals from "./components/CalendarTotals";
 import LeagueTable from "./components/LeageTable";
 import WeekSelector from "./components/filter/WeekSelector";
 import MaturitySelector from "./components/filter/MaturitySelector";
+import LeadManagerSelector from "./components/filter/LeadManagerSelector";
 
 // Getting rid of annoying error messages
 const error = console.error;
@@ -54,6 +55,7 @@ export default function Home() {
     byMaturity: new Array() as any[],
     bySector: new Array() as any[],
     byState: new Array() as any[],
+    byLeadManager: new Array() as any[],
     byTaxStatus: new Array() as any[],
     byIntersection: new Array() as any[],
   };
@@ -84,6 +86,7 @@ export default function Home() {
         byMaturity,
         bySector,
         byState,
+        byLeadManager,
         byTaxStatus,
         byIntersection,
       } = filteredData.filteredDeals;
@@ -92,6 +95,7 @@ export default function Home() {
         byMaturity,
         bySector,
         byState,
+        byLeadManager,
         byTaxStatus,
         byIntersection,
       });
@@ -170,6 +174,11 @@ export default function Home() {
                 <FilterSelect
                   filter={filter}
                   filterType="state"
+                  handleFilterUpdate={handleFilterUpdate}
+                />
+                <LeadManagerSelector
+                  filter={filter}
+                  unfilteredDeals={unfilteredDeals}
                   handleFilterUpdate={handleFilterUpdate}
                 />
                 <FilterSelect
