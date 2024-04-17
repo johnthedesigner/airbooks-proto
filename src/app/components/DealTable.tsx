@@ -22,17 +22,17 @@ interface tableProps {
 const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
   const [hoveredRow, setHoveredRow] = useState(0);
   const columns = [
-    { name: "Date", width: 90 },
-    { name: "Issue Description", width: 240 },
-    { name: "Par ($M)", width: 90 },
-    { name: "State", width: 90 },
-    { name: "Tax Status", width: 90 },
-    { name: "Offering Type", width: 100 },
-    { name: "Rating", width: 230 },
-    { name: "Structure", width: 200 },
-    { name: "Sector", width: 120 },
-    { name: "Lead Manager", width: 200 },
-    { name: "Source of Repayment", width: 200 },
+    { name: "Date", width: 90, headerAlign: "left" },
+    { name: "Issue Description", width: 240, headerAlign: "left" },
+    { name: "Par ($M)", width: 90, headerAlign: "right" },
+    { name: "State", width: 90, headerAlign: "left" },
+    { name: "Tax Status", width: 90, headerAlign: "left" },
+    { name: "Offering Type", width: 100, headerAlign: "left" },
+    { name: "Rating", width: 230, headerAlign: "left" },
+    { name: "Structure", width: 200, headerAlign: "left" },
+    { name: "Sector", width: 120, headerAlign: "left" },
+    { name: "Lead Manager", width: 200, headerAlign: "left" },
+    { name: "Source of Repayment", width: 200, headerAlign: "left" },
   ];
 
   var tableWidth = 0;
@@ -49,6 +49,43 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
   //   index: number;
   //   style: React.CSSProperties;
   // }
+
+  interface cellWrapperProps {
+    children: any;
+    rowIndex: number;
+    columnIndex: number;
+    style: any;
+    isHovered: Boolean;
+  }
+
+  const CellWrapper = ({
+    children,
+    rowIndex,
+    columnIndex,
+    style,
+    isHovered,
+  }: cellWrapperProps) => {
+    return (
+      <div
+        // key={key}
+        className={styles["table__cell--body"]}
+        onMouseEnter={() => {
+          setHoveredRow(rowIndex);
+        }}
+        onMouseLeave={() => {
+          setHoveredRow(0);
+        }}
+        style={{
+          ...style,
+          // width: "fit-content",
+          width: columns[columnIndex].width,
+          minWidth: columns[columnIndex].width,
+          background: isHovered ? palettes.grayscale[0] : "white",
+        }}>
+        {children}
+      </div>
+    );
+  };
 
   const cellRenderer = ({
     columnIndex,
@@ -84,101 +121,61 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
       if (columnName === "Rating") {
         // For ratings cluster
         return (
-          <div
+          <CellWrapper
             key={key}
-            className={styles["table__cell--body"]}
-            onMouseEnter={() => {
-              setHoveredRow(rowIndex);
-            }}
-            onMouseLeave={() => {
-              setHoveredRow(0);
-            }}
-            style={{
-              ...style,
-              // width: "fit-content",
-              width: columns[columnIndex].width,
-              minWidth: columns[columnIndex].width,
-              background: isHovered ? palettes.grayscale[0] : "white",
-            }}>
+            rowIndex={rowIndex}
+            columnIndex={columnIndex}
+            style={style}
+            isHovered={isHovered}>
             <Box sx={{ display: "flex", gap: "0.25rem" }}>
               <RatingButton label={deal.moodysNormal} />
               <RatingButton label={deal.spNormal} />
               <RatingButton label={deal.fitchNormal} />
               <RatingButton label={deal.krollNormal} />
             </Box>
-          </div>
+          </CellWrapper>
         );
       } else if (columnName === "Par ($M)") {
         // For regular par amount column
         return (
-          <div
+          <CellWrapper
             key={key}
-            className={styles["table__cell--body"]}
-            onMouseEnter={() => {
-              setHoveredRow(rowIndex);
-            }}
-            onMouseLeave={() => {
-              setHoveredRow(0);
-            }}
-            style={{
-              ...style,
-              // width: "max-content",
-              width: columns[columnIndex].width,
-              minWidth: columns[columnIndex].width,
-              justifyContent: "flex-end",
-              background: isHovered ? palettes.grayscale[0] : "white",
-            }}>
-            <span className={styles["table__text"]}>
+            rowIndex={rowIndex}
+            columnIndex={columnIndex}
+            style={{ ...style, justifyContent: "flex-end" }}
+            isHovered={isHovered}>
+            <span
+              className={styles["table__text"]}
+              style={{ alignItems: "flex-end" }}>
               {numberFormat(Number(singleValue(deal[columnName])), "par-table")}
             </span>
-          </div>
+          </CellWrapper>
         );
       } else if (columnName === "Structure") {
         // For structure spark tables
         return (
-          <div
+          <CellWrapper
             key={key}
-            className={styles["table__cell--body"]}
-            onMouseEnter={() => {
-              setHoveredRow(rowIndex);
-            }}
-            onMouseLeave={() => {
-              setHoveredRow(0);
-            }}
-            style={{
-              ...style,
-              // width: "max-content",
-              width: columns[columnIndex].width,
-              minWidth: columns[columnIndex].width,
-              justifyContent: "flex-end",
-              background: isHovered ? palettes.grayscale[0] : "white",
-            }}>
+            rowIndex={rowIndex}
+            columnIndex={columnIndex}
+            style={style}
+            isHovered={isHovered}>
             <StructureSpark deal={deal} filter={filter} />
-          </div>
+          </CellWrapper>
         );
       } else {
         // For regular plain-text cell content
         return (
-          <div
+          <CellWrapper
             key={key}
-            className={styles["table__cell--body"]}
-            onMouseEnter={() => {
-              setHoveredRow(rowIndex);
-            }}
-            onMouseLeave={() => {
-              setHoveredRow(0);
-            }}
-            style={{
-              ...style,
-              // width: "max-content",
-              width: columns[columnIndex].width,
-              minWidth: columns[columnIndex].width,
-              background: isHovered ? palettes.grayscale[0] : "white",
-            }}>
+            rowIndex={rowIndex}
+            columnIndex={columnIndex}
+            style={style}
+            isHovered={isHovered}>
             <span className={styles["table__text"]}>
               {singleValue(deal[columnName])}
             </span>
-          </div>
+          </CellWrapper>
         );
       }
     }
@@ -357,6 +354,7 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
                   className={styles["table__cell--header"]}
                   style={{
                     width: column.width,
+                    textAlign: column.headerAlign,
                     // position: "sticky",
                     // top: 0,
                   }}>
