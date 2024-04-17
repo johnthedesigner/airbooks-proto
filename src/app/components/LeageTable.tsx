@@ -140,7 +140,7 @@ const LeagueTable = ({
           <tbody>
             {_.map(_.take(assembledData, 5), (lead: any) => {
               return (
-                <tr>
+                <tr key={lead.name}>
                   <td>{lead.name}</td>
                   <td style={{ textAlign: "right" }}>
                     {filterApplied

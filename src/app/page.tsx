@@ -12,10 +12,10 @@ import {
 } from "@mui/joy";
 import SyncRoundedIcon from "@mui/icons-material/SyncRounded";
 
+// import calendarData from "../data/calendar-data.json";
+import weeks from "../data/calendar-data.json";
 import { theme } from "@/utils/colorUtils";
-import { calendarData } from "@/utils/dataUtils";
-// import dealData20240318 from "../data/deals-2024-3-18.json";
-// import maturityData20240318 from "../data/maturities-2024-3-18.json";
+// import { calendarData } from "@/utils/dataUtils";
 import {
   applyFilters,
   updateFilter,
@@ -33,13 +33,20 @@ import DealTable from "./components/DealTable";
 import RatingsCard from "./components/RatingsCard";
 import SectorCard from "./components/SectorCard";
 import MaturityBreakdown from "./components/MaturityBreakdown";
-import { mapRatings } from "@/utils/ratingUtils";
+// import { mapRatings } from "@/utils/ratingUtils";
 import FilterSelect from "./components/filter/FilterSelect";
 import MapCard from "./components/MapCard";
 import CalendarTotals from "./components/CalendarTotals";
 import LeagueTable from "./components/LeageTable";
 import WeekSelector from "./components/filter/WeekSelector";
 import MaturitySelector from "./components/filter/MaturitySelector";
+
+// Getting rid of annoying error messages
+const error = console.error;
+console.error = (...args: any) => {
+  if (/defaultProps/.test(args[0])) return;
+  error(...args);
+};
 
 export default function Home() {
   var filteredDealsInitialState = {
@@ -62,12 +69,14 @@ export default function Home() {
 
   useEffect(() => {
     // Get the right week's data
-    const weekData = calendarData.weeks[selectedWeek];
+    const weekData: any = _.find(weeks, (week: any) => {
+      return week.index === selectedWeek;
+    });
     // Get freshly filtered deals and maturities when filter is updated
     const getFilteredData = async () => {
       let filteredData = await applyFilters(
-        weekData.deals,
-        weekData.maturities,
+        weekData ? weekData.deals : [],
+        weekData ? weekData.maturities : [],
         filter
       );
       let {
@@ -122,7 +131,7 @@ export default function Home() {
               <WeekSelector
                 selectedWeek={selectedWeek}
                 setSelectedWeek={setSelectedWeek}
-                weeks={calendarData.weeks}
+                weeks={weeks}
               />
               <Divider orientation="vertical" />
               <div

@@ -8,18 +8,73 @@ import dealData20240325 from "../data/deals-2024-3-25.json";
 import maturityData20240325 from "../data/maturities-2024-3-25.json";
 import { mapRatings } from "./ratingUtils";
 
+const mapDealMaturityData = (deals: any[], maturities: any[]) => {
+  // Build chart data for each deal's maturity structure
+  // Get a list of maturity years
+  let maturityArray = _.uniq(
+    _.map(maturities, (maturity: any) => {
+      return Number(maturity.Structure);
+    })
+  );
+  // Get the earliest and latest years
+  let earliestYear = _.min(maturityArray) || 0;
+  let latestYear = _.max(maturityArray) || 0;
+  // Build a new deals array
+  return _.map(deals, (deal: any) => {
+    // Get all maturities for this deal
+    let structureArray = _.filter(maturities, (maturity: any) => {
+      return maturity.Index === deal.Index;
+    });
+    // Build chart data array and populate it with maturity data from this deal
+    let data = new Array();
+    for (
+      let structureIndex = earliestYear;
+      structureIndex < latestYear;
+      structureIndex++
+    ) {
+      // console.log("IS THIS WORKING?", deal);
+      let currentMaturity = _.find(structureArray, (maturity: any) => {
+        // console.log(
+        //   "MATCHING MATURITIES",
+        //   deal.structureArray,
+        //   maturity.Structure
+        // );
+        return maturity.Structure === structureIndex;
+      });
+      // console.log("LOOPING MATURITIES", currentMaturity);
+      // Add par amount if maturity exists this year, or else zero
+      data.push({
+        name: `${structureIndex}`,
+        par: currentMaturity ? currentMaturity["Filtered Par"] : 0,
+        structureIndex,
+      });
+    }
+    return {
+      ...deal,
+      structureArray,
+      structureChartData: data,
+    };
+  });
+};
+
 export const calendarData = {
   weeks: [
     {
       index: 0,
       date: "2024/03/18",
-      deals: mapRatings(dealData20240318),
+      deals: mapDealMaturityData(
+        mapRatings(dealData20240318),
+        maturityData20240318
+      ),
       maturities: maturityData20240318,
     },
     {
       index: 1,
       date: "2024/03/25",
-      deals: mapRatings(dealData20240325),
+      deals: mapDealMaturityData(
+        mapRatings(dealData20240325),
+        maturityData20240325
+      ),
       maturities: maturityData20240325,
     },
   ],

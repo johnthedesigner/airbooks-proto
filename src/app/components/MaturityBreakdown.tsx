@@ -113,7 +113,6 @@ const MaturityBreakdown = ({
                 return `${numberFormat(value, "par-axis")}Mn`;
               }}
             />
-            {/* <Legend/> */}
             <Bar
               name="Current filter"
               dataKey="filteredValue"

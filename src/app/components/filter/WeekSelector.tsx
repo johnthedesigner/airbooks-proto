@@ -8,7 +8,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 interface filterProps {
   selectedWeek: number;
   setSelectedWeek: Function;
-  weeks: any[];
+  weeks: any;
 }
 
 const WeekSelector = ({
@@ -73,9 +73,9 @@ const WeekSelector = ({
                 },
               },
             }}>
-            {_.map(weekOptions, (weekOption: any) => {
+            {_.map(weekOptions, (weekOption: any, index: number) => {
               return (
-                <Option key={weekOption.index} value={weekOption.value}>
+                <Option key={index} value={weekOption.value}>
                   {weekOption.name}
                 </Option>
               );
