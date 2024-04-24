@@ -7,8 +7,19 @@
 }
 
 .header {
-  height: 3rem;
   background: var(--grayscale-12);
+  text-align: center;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 1rem;
+}
+
+.header__title {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 400;
 }
 
 .body {

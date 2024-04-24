@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import _ from "lodash";
+import _, { stubArray } from "lodash";
 import { CssVarsProvider } from "@mui/joy/styles";
 import {
   Button,
@@ -41,6 +41,7 @@ import LeagueTable from "./components/LeageTable";
 import WeekSelector from "./components/filter/WeekSelector";
 import MaturitySelector from "./components/filter/MaturitySelector";
 import LeadManagerSelector from "./components/filter/LeadManagerSelector";
+import { numberFormat } from "@/utils/dataUtils";
 
 // Getting rid of annoying error messages
 const error = console.error;
@@ -62,6 +63,7 @@ export default function Home() {
 
   const [viewMode, setViewMode] = useState("combo");
   const [selectedWeek, setSelectedWeek] = useState(0);
+  const [weekTotal, setWeekTotal] = useState(0);
   const [filter, setFilter] = useState<filterStateInterface>(filterState);
   const [filteredMaturities, setFilteredMaturities] = useState(new Array());
   const [filteredDeals, setFilteredDeals] = useState(filteredDealsInitialState);
@@ -74,6 +76,13 @@ export default function Home() {
     const weekData: any = _.find(weeks, (week: any) => {
       return week.index === selectedWeek;
     });
+    // Get calendar total
+    var weekTotal = 0;
+    _.each(weekData.deals, (deal: any) => {
+      console.log(Number(deal["Filtered Par"]));
+      weekTotal += Number(deal["Filtered Par"]);
+    });
+    setWeekTotal(weekTotal);
     // Get freshly filtered deals and maturities when filter is updated
     const getFilteredData = async () => {
       let filteredData = await applyFilters(
@@ -129,15 +138,53 @@ export default function Home() {
   return (
     <CssVarsProvider theme={theme}>
       <main className={styles.main}>
+        <div className={styles["header"]}>
+          <div>
+            <WeekSelector
+              selectedWeek={selectedWeek}
+              setSelectedWeek={setSelectedWeek}
+              weeks={weeks}
+            />
+            <Divider orientation="vertical" />
+          </div>
+          <div
+            className={styles["header__title"]}>{`Muni Calendar: ${numberFormat(
+            weekTotal,
+            "calendar-total"
+          )}B`}</div>
+          <div>
+            <Divider orientation="vertical" />
+            <FormControl>
+              {/* <FormLabel>View Mode</FormLabel> */}
+              <ButtonGroup size={"sm"} color="primary">
+                <Button
+                  variant={viewMode === "table" ? "solid" : undefined}
+                  color="primary"
+                  size={"sm"}
+                  onClick={() => setViewMode("table")}>
+                  Table
+                </Button>
+                <Button
+                  variant={viewMode === "charts" ? "solid" : undefined}
+                  color="primary"
+                  size={"sm"}
+                  onClick={() => setViewMode("charts")}>
+                  Charts
+                </Button>
+                <Button
+                  variant={viewMode === "combo" ? "solid" : undefined}
+                  color="primary"
+                  size={"sm"}
+                  onClick={() => setViewMode("combo")}>
+                  Both
+                </Button>
+              </ButtonGroup>
+            </FormControl>
+          </div>
+        </div>
         <div className={styles.body}>
           <div className={styles["body__content"]}>
             <div className={styles["body__filter-bar"]}>
-              <WeekSelector
-                selectedWeek={selectedWeek}
-                setSelectedWeek={setSelectedWeek}
-                weeks={weeks}
-              />
-              <Divider orientation="vertical" />
               <div
                 style={{
                   flex: 1,
@@ -192,33 +239,6 @@ export default function Home() {
                   handleFilterUpdate={handleFilterUpdate}
                 />
               </div>
-              <Divider orientation="vertical" />
-              <FormControl>
-                <FormLabel>View Mode</FormLabel>
-                <ButtonGroup size={"sm"} color="primary">
-                  <Button
-                    variant={viewMode === "table" ? "solid" : undefined}
-                    color="primary"
-                    size={"sm"}
-                    onClick={() => setViewMode("table")}>
-                    Table
-                  </Button>
-                  <Button
-                    variant={viewMode === "charts" ? "solid" : undefined}
-                    color="primary"
-                    size={"sm"}
-                    onClick={() => setViewMode("charts")}>
-                    Charts
-                  </Button>
-                  <Button
-                    variant={viewMode === "combo" ? "solid" : undefined}
-                    color="primary"
-                    size={"sm"}
-                    onClick={() => setViewMode("combo")}>
-                    Both
-                  </Button>
-                </ButtonGroup>
-              </FormControl>
             </div>
             <div
               className={styles["body__nonscrolling-area"]}

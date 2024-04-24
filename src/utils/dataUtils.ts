@@ -93,6 +93,10 @@ export const singleValue = (string: string) => {
 
 export const numberFormat = (value: number, type: string) => {
   switch (type) {
+    case "calendar-total":
+      return numeral(value).divide(1000000).format("($0,0.0)");
+      break;
+
     case "par-axis":
       return numeral(value).divide(1000).format("($0,0)");
       break;
