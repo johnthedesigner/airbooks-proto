@@ -240,12 +240,16 @@ export const applyDealFilters = async (deals: any, filter: any) => {
     .value();
 
   // Get deals filtered by maturity
+  const yearOnly = (yearString: string) => {
+    // Remove "(P)" for put bonds
+    return yearString.split("(")[0];
+  };
   let byMaturity = await _(deals)
     .filter((deal: any) => {
       // Make sure Structure is a string
       let dealStructure = `${deal.Structure}`;
       // Get an array of maturities from the Structure field
-      let dealMaturities = dealStructure.split(", ");
+      let dealMaturities = _.map(dealStructure.split(", "), yearOnly);
       return (
         filter.maturities.length === 0 ||
         _.intersection(dealMaturities, filter.maturities).length > 0
