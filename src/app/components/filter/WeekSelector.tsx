@@ -37,6 +37,7 @@ const WeekSelector = ({
             value={selectedWeek}
             size={"sm"}
             onChange={handleChange}
+            color="neutral"
             startDecorator={
               <IconButton
                 style={{ zIndex: 1 }}

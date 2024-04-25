@@ -54,6 +54,7 @@ const LeadManagerSelector = ({
           <Select
             multiple
             // defaultValue={[]}
+            color="primary"
             value={filter.leadManager}
             size={"sm"}
             placeholder={`Filter by ${filterList.leadManager.label}`}

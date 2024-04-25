@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import _, { stubArray } from "lodash";
+import _ from "lodash";
 import { CssVarsProvider } from "@mui/joy/styles";
 import {
   Button,
@@ -14,7 +14,7 @@ import SyncRoundedIcon from "@mui/icons-material/SyncRounded";
 
 // import calendarData from "../data/calendar-data.json";
 import weeks from "../data/calendar-data.json";
-import { theme } from "@/utils/colorUtils";
+import { palettes, theme } from "@/utils/colorUtils";
 // import { calendarData } from "@/utils/dataUtils";
 import {
   applyFilters,
@@ -79,7 +79,6 @@ export default function Home() {
     // Get calendar total
     var weekTotal = 0;
     _.each(weekData.deals, (deal: any) => {
-      console.log(Number(deal["Filtered Par"]));
       weekTotal += Number(deal["Filtered Par"]);
     });
     setWeekTotal(weekTotal);
@@ -156,24 +155,27 @@ export default function Home() {
             <Divider orientation="vertical" />
             <FormControl>
               {/* <FormLabel>View Mode</FormLabel> */}
-              <ButtonGroup size={"sm"} color="primary">
+              <ButtonGroup
+                size={"sm"}
+                color="neutral"
+                sx={{ "--ButtonGroup-separatorColor": palettes.grayscale[10] }}>
                 <Button
-                  variant={viewMode === "table" ? "solid" : undefined}
-                  color="primary"
+                  variant={viewMode === "table" ? "solid" : "soft"}
+                  color="neutral"
                   size={"sm"}
                   onClick={() => setViewMode("table")}>
                   Table
                 </Button>
                 <Button
-                  variant={viewMode === "charts" ? "solid" : undefined}
-                  color="primary"
+                  variant={viewMode === "charts" ? "solid" : "soft"}
+                  color="neutral"
                   size={"sm"}
                   onClick={() => setViewMode("charts")}>
                   Charts
                 </Button>
                 <Button
-                  variant={viewMode === "combo" ? "solid" : undefined}
-                  color="primary"
+                  variant={viewMode === "combo" ? "solid" : "soft"}
+                  color="neutral"
                   size={"sm"}
                   onClick={() => setViewMode("combo")}>
                   Both

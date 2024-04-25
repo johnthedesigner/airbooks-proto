@@ -56,6 +56,7 @@ const MaturitySelector = ({
           <Select
             multiple
             // defaultValue={[]}
+            color="primary"
             value={filter.maturities}
             size={"sm"}
             placeholder={`Filter by ${filterList.maturities.label}`}

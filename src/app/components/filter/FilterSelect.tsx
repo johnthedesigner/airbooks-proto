@@ -33,6 +33,7 @@ const FilterSelect = ({
           <Select
             multiple
             // defaultValue={[]}
+            color="primary"
             value={filter[filterType]}
             size={"sm"}
             placeholder={`Filter by ${filterList[filterType].label}`}
