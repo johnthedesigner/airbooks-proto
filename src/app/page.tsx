@@ -267,7 +267,7 @@ export default function Home() {
                 flex: viewMode === "charts" || viewMode === "combo" ? 3 : 0,
               }}>
               <Column fr={1}>
-                <Row fr={1} maxHeight={"16rem"}>
+                <Row fr={1} minHeight={"16rem"} maxHeight={"16rem"}>
                   <Cell>
                     <MaturityBreakdown
                       filter={filter}
