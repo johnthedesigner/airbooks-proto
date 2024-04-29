@@ -259,11 +259,18 @@ const SpreadByMaturity = ({
               range={[0, 1000]}
             />
             <Tooltip
-            //   formatter={(value: number, key: any) => {
-            //     console.log("TOOLTIP VALUE", value,);
-            //     // return `${numberFormat(value, "par-axis")}Mn`;
-            //     return "TEST";
-            //   }}
+              formatter={(value: number, key: any) => {
+                console.log("TOOLTIP VALUE", value);
+                // return `${numberFormat(value, "par-axis")}Mn`;
+                if (key === "totalPar") {
+                  return [`${numberFormat(value, "par-axis")}Mn`, "Total Par"];
+                } else if (key === "spreadLane") {
+                  return [spreadLaneData[value].label, "Spread"];
+                } else if (key === "maturity") {
+                  return [value, "Year"];
+                }
+                return false;
+              }}
             />
             <Scatter
               id="id"
