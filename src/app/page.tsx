@@ -42,6 +42,8 @@ import WeekSelector from "./components/filter/WeekSelector";
 import MaturitySelector from "./components/filter/MaturitySelector";
 import LeadManagerSelector from "./components/filter/LeadManagerSelector";
 import { numberFormat } from "@/utils/dataUtils";
+import CouponsCard from "./components/CouponsCard";
+import SpreadByMaturity from "./components/SpreadByMaturity";
 
 // Getting rid of annoying error messages
 const error = console.error;
@@ -288,7 +290,7 @@ export default function Home() {
                           />
                         </Cell>
                       </Column>
-                      <Column fr={2}>
+                      <Column fr={1}>
                         <Cell>
                           <LeagueTable
                             unfilteredData={unfilteredDeals}
@@ -310,6 +312,15 @@ export default function Home() {
                           />
                         </Cell>
                       </Column>
+                      <Column fr={1}>
+                        <Cell>
+                          <CouponsCard
+                            unfilteredData={unfilteredMaturities}
+                            filteredData={filteredMaturities}
+                            filter={filter}
+                          />
+                        </Cell>
+                      </Column>
                     </Row>
                   </Column>
                   <Column fr={1}>
@@ -323,13 +334,23 @@ export default function Home() {
                     </Cell>
                   </Column>
                 </Row>
-                <Row fr={1}>
+                <Row fr={1} minHeight={"16rem"}>
                   <Cell>
                     <SectorCard
                       unfilteredData={unfilteredDeals}
                       filteredData={filteredDeals.byIntersection}
                       handleFilterUpdate={handleToggleFilterValue}
                       filter={filter}
+                    />
+                  </Cell>
+                </Row>
+                <Row fr={1} minHeight={"16rem"} maxHeight={"16rem"}>
+                  <Cell>
+                    <SpreadByMaturity
+                      filter={filter}
+                      unfilteredData={unfilteredMaturities}
+                      filteredData={filteredMaturities}
+                      handleFilterUpdate={handleToggleFilterValue}
                     />
                   </Cell>
                 </Row>

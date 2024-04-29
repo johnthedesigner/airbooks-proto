@@ -20,7 +20,6 @@ const loadData = (path) => {
 };
 
 export const mapRating = (rating) => {
-  console.log("CHECK RATING", rating);
   // Only use one rating when other values are provided
   rating = rating.split(",")[0];
   rating = rating.split(" (")[0];
@@ -86,11 +85,26 @@ export const mapRating = (rating) => {
   return mapToArray(rating);
 };
 
+// Make sure all coupon fields contain only one value, or are empty ("-")
+const getCleanCoupon = (maturity) => {
+  // If there's no coupon return empty value
+  if (maturity["Coupon"] === "-") return maturity["Coupon"];
+  // Take first value from comma separated coupon list
+  return Number(`${maturity["Coupon"]}`.split(",")[0]);
+};
+const cleanCoupons = (maturityData) => {
+  return _.map(maturityData, (maturity) => {
+    // Return maturity with coupon replaced by clean coupon value
+    return {
+      ...maturity,
+      Coupon: getCleanCoupon(maturity),
+    };
+  });
+};
+
 // Normalize certain fields for easier use in the UI
 const mapRatings = (rawMaturitiesList) => {
-  // console.log("MATURITIES LSIT", rawMaturitiesList);
   return _.map(rawMaturitiesList, (maturity, index) => {
-    console.log("CURRENT MATURITY", maturity);
     let moodysNormal = mapRating(maturity["Moody's"]);
     let spNormal = mapRating(maturity["Standard & Poor's"]);
     let fitchNormal = mapRating(maturity["Fitch"]);
@@ -126,25 +140,19 @@ const mapDealMaturityData = (deals, maturities) => {
     let data = new Array();
     for (
       let structureIndex = earliestYear;
-      structureIndex < latestYear;
+      structureIndex <= latestYear;
       structureIndex++
     ) {
-      // console.log("IS THIS WORKING?", deal);
+      // Get the matching maturity (may be undefined)
       let currentMaturity = _.find(structureArray, (maturity) => {
-        // console.log(
-        //   "MATCHING MATURITIES",
-        //   deal.structureArray,
-        //   maturity.Structure
-        // );
         return maturity.Structure === structureIndex;
       });
-      // console.log("LOOPING MATURITIES", currentMaturity);
       // Add par amount if maturity exists this year, or else zero
       data.push({
         name: `${structureIndex}`,
         par: currentMaturity ? currentMaturity["Filtered Par"] : 0,
         structureIndex,
-        key: `${maturity.Index}-${maturity.Structure}`,
+        key: `${deal.Index}-${structureIndex}`,
       });
     }
     return {
@@ -169,7 +177,7 @@ const calendarData = [
       mapRatings(JSON.parse(loadData(dealPath20240318))),
       JSON.parse(loadData(maturityPath20240318))
     ),
-    maturities: JSON.parse(loadData(maturityPath20240318)),
+    maturities: cleanCoupons(JSON.parse(loadData(maturityPath20240318))),
   },
   {
     index: 1,
@@ -178,7 +186,7 @@ const calendarData = [
       mapRatings(JSON.parse(loadData(dealPath20240325))),
       JSON.parse(loadData(maturityPath20240325))
     ),
-    maturities: JSON.parse(loadData(maturityPath20240325)),
+    maturities: cleanCoupons(JSON.parse(loadData(maturityPath20240325))),
   },
 ];
 
