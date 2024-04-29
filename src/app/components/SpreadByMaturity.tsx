@@ -56,7 +56,7 @@ const spreadLaneData: Record<string, any> = {
   },
   d: {
     key: "d",
-    label: "<5",
+    label: "<50",
     max: 50,
   },
   e: {
