@@ -32,7 +32,11 @@ const DealTable = ({ dealData, handleFilterUpdate, filter }: tableProps) => {
     { name: "Structure", width: 200, headerAlign: "left" },
     { name: "Sector", width: 120, headerAlign: "left" },
     { name: "Lead Manager", width: 200, headerAlign: "left" },
-    { name: "Source of Repayment", width: 200, headerAlign: "left" },
+    { name: "Source of Repayment", width: 180, headerAlign: "left" },
+    { name: "Issue Type", width: 90, headerAlign: "left" },
+    { name: "First Call Date", width: 110, headerAlign: "left" },
+    { name: "First Coupon Date", width: 110, headerAlign: "left" },
+    { name: "Dated Date", width: 110, headerAlign: "left" },
   ];
 
   var tableWidth = 0;
