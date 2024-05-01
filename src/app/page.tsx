@@ -131,6 +131,14 @@ export default function Home() {
     setFilter(substituteFilter(filter, key, value));
   };
 
+  const handleToggleFilterValues = (updateArray: any) => {
+    let newFilter = { ...filter };
+    _.each(updateArray, (update: any) => {
+      newFilter = updateFilter(newFilter, update.key, update.value);
+    });
+    setFilter(newFilter);
+  };
+
   const handleToggleFilterValue = (key: string, value: any) => {
     setFilter(updateFilter(filter, key, value));
   };
@@ -359,6 +367,7 @@ export default function Home() {
                       unfilteredData={unfilteredMaturities}
                       filteredData={filteredMaturities}
                       handleFilterUpdate={handleToggleFilterValue}
+                      handleFilterUpdates={handleToggleFilterValues}
                     />
                   </Cell>
                 </Row>

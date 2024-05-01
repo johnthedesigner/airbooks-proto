@@ -26,6 +26,7 @@ interface chartProps {
   unfilteredData: any;
   filteredData: any;
   handleFilterUpdate: Function;
+  handleFilterUpdates: Function;
 }
 
 const SpreadByMaturity = ({
@@ -33,6 +34,7 @@ const SpreadByMaturity = ({
   unfilteredData,
   filteredData,
   handleFilterUpdate,
+  handleFilterUpdates,
 }: chartProps) => {
   // Hold some data in component state
   const [earliestYear, setEarliestYear] = useState(0);
@@ -54,10 +56,6 @@ const SpreadByMaturity = ({
     setLatestYear(_.max(yearArray));
   }, [unfilteredData]);
 
-  // Build an array of years with total par amounts
-  //   const yearsPresent = _.map(unfilteredData, (maturity: any) => {
-  //     return maturity.Structure;
-  //   });
   // Function for determining which range of spreads a maturity falls into
   const getSpreadRange = (maturity: any) => {
     // from spread data, take first value and remove plus sign if present
@@ -194,6 +192,18 @@ const SpreadByMaturity = ({
     return false;
   };
 
+  const handleClick = (event: any) => {
+    // handleFilterUpdate("spread", event.spreadLane);
+    handleFilterUpdates([
+      { key: "maturities", value: event.maturity },
+      { key: "spread", value: event.spreadLane },
+    ]);
+  };
+
+  const handleAxisClick = (value: any) => {
+    handleFilterUpdate("spread", `${value}`);
+  };
+
   return (
     <Card>
       <CardHeader label="Total Par by Spread across Maturities ($Mn)" />
@@ -233,7 +243,7 @@ const SpreadByMaturity = ({
               tickFormatter={(value: any, index: number) => {
                 return spreadLaneData[value].label;
               }}
-              onClick={(event: any) => console.log(event.value)}
+              onClick={(event: any) => handleAxisClick(event.value)}
             />
             <ZAxis type="number" dataKey="totalPar" range={[0, 1000]} />
             <Tooltip formatter={tooltipFormatter} />
@@ -244,6 +254,7 @@ const SpreadByMaturity = ({
               type="number"
               data={unfilteredParByMaturity}
               fill={palettes.grayscale[2]}
+              onClick={handleClick}
             />
             <Scatter
               id="id"
@@ -251,7 +262,8 @@ const SpreadByMaturity = ({
               name="Filtered Spread by Maturity"
               type="number"
               data={filteredParByMaturity}
-              fill={palettes.red[6]}>
+              fill={palettes.red[6]}
+              onClick={handleClick}>
               {filteredParByMaturity.map((entry: any, index: number) => {
                 let colors: Record<string, any> = {
                   a: palettes.blue[4],

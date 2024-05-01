@@ -195,18 +195,19 @@ export const filterList: filterListInterface = {
 
 export const updateFilter = (filter: any, key: string, value: any) => {
   // Get the filter to be updated
-  const currentValue = filter[key];
-  if (_.includes(currentValue, value)) {
+  let currentValueArray = filter[key];
+  let newValue = `${value}`;
+  if (_.includes(currentValueArray, newValue)) {
     // If this key exists, toggle presence of provided value
     return {
       ...filter,
-      [key]: _.xor(currentValue, [value]),
+      [key]: _.xor(currentValueArray, [newValue]),
     };
   } else {
     // If this key doesn't exist, add the key-value pair
     return {
       ...filter,
-      [key]: [...currentValue, value],
+      [key]: [...currentValueArray, newValue],
     };
   }
 };
@@ -275,15 +276,6 @@ export const applyDealFilters = async (deals: any, filter: any) => {
 
   // Get deals filtered by maturity/spread
   const checkSpreadLane = (spread: number, lane: string) => {
-    console.log(
-      "CHECK RANGE",
-      spread,
-      spreadLaneData[lane].min,
-      spread >= spreadLaneData[lane].min,
-      spreadLaneData[lane].max,
-      spread < spreadLaneData[lane].max,
-      spread >= spreadLaneData[lane].min && spread < spreadLaneData[lane].max
-    );
     return (
       spread >= spreadLaneData[lane].min && spread < spreadLaneData[lane].max
     );
@@ -355,7 +347,6 @@ export const applyDealFilters = async (deals: any, filter: any) => {
     })
     .value();
 
-  console.log("SPREAD FILTER", bySpread);
   let byIntersection = await _.intersection(
     byRating,
     byMaturity,
