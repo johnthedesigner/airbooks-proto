@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { singleValue } from "./dataUtils";
+import { spreadLaneData } from "./spreadUtils";
 
 // Initial filter state
 export const filterState = {
@@ -8,6 +9,7 @@ export const filterState = {
   sector: [],
   state: [],
   leadManager: [],
+  spread: [],
   taxStatus: [],
   offeringType: [],
 };
@@ -19,6 +21,7 @@ export interface filterStateInterface {
   sector?: string[];
   state?: string[];
   leadManager?: string[];
+  spread?: string[];
   taxStatus?: string[];
   offeringType?: string[];
 }
@@ -35,6 +38,7 @@ export interface filterListInterface {
   sector: filterItemInterface;
   state: filterItemInterface;
   leadManager: filterItemInterface;
+  spread: filterItemInterface;
   taxStatus: filterItemInterface;
   offeringType: filterItemInterface;
 }
@@ -158,6 +162,18 @@ export const filterList: filterListInterface = {
       },
     ],
   },
+  spread: {
+    label: "Spread",
+    key: "spread",
+    options: [
+      { label: spreadLaneData.a.label, value: spreadLaneData.a.key },
+      { label: spreadLaneData.b.label, value: spreadLaneData.b.key },
+      { label: spreadLaneData.c.label, value: spreadLaneData.c.key },
+      { label: spreadLaneData.d.label, value: spreadLaneData.d.key },
+      { label: spreadLaneData.e.label, value: spreadLaneData.e.key },
+      { label: spreadLaneData.f.label, value: spreadLaneData.f.key },
+    ],
+  },
   taxStatus: {
     label: "Tax Status",
     key: "taxStatus",
@@ -257,6 +273,38 @@ export const applyDealFilters = async (deals: any, filter: any) => {
     })
     .value();
 
+  // Get deals filtered by maturity/spread
+  const checkSpreadLane = (spread: number, lane: string) => {
+    console.log(
+      "CHECK RANGE",
+      spread,
+      spreadLaneData[lane].min,
+      spread >= spreadLaneData[lane].min,
+      spreadLaneData[lane].max,
+      spread < spreadLaneData[lane].max,
+      spread >= spreadLaneData[lane].min && spread < spreadLaneData[lane].max
+    );
+    return (
+      spread >= spreadLaneData[lane].min && spread < spreadLaneData[lane].max
+    );
+  };
+  let bySpread = await _(deals)
+    .filter((deal: any) => {
+      let spreadValues = _.map(deal.structureArray, (maturity: any) => {
+        // from spread data, take first value and remove plus sign if present
+        return Number(`${maturity["Spread"]}`.split(",")[0].replace("+", ""));
+      });
+      // Check if any of the maturities match current spread filter
+      let spreadChecks = new Array();
+      _.each(filter.spread, (spreadLane: string) => {
+        _.each(spreadValues, (value: number) => {
+          spreadChecks.push(checkSpreadLane(value, spreadLane));
+        });
+      });
+      return filter.spread.length === 0 || _.includes(spreadChecks, true);
+    })
+    .value();
+
   // Get deals filtered by sector
   let bySector = await _(deals)
     .filter((deal: any) => {
@@ -307,12 +355,14 @@ export const applyDealFilters = async (deals: any, filter: any) => {
     })
     .value();
 
+  console.log("SPREAD FILTER", bySpread);
   let byIntersection = await _.intersection(
     byRating,
     byMaturity,
     bySector,
     byState,
     byLeadManager,
+    bySpread,
     byTaxStatus,
     byOfferingType
   );
@@ -324,6 +374,7 @@ export const applyDealFilters = async (deals: any, filter: any) => {
     bySector,
     byState,
     byLeadManager,
+    bySpread,
     byTaxStatus,
     byOfferingType,
     byIntersection,

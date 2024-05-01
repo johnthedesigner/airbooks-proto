@@ -59,6 +59,7 @@ export default function Home() {
     bySector: new Array() as any[],
     byState: new Array() as any[],
     byLeadManager: new Array() as any[],
+    bySpread: new Array() as any[],
     byTaxStatus: new Array() as any[],
     byIntersection: new Array() as any[],
   };
@@ -97,6 +98,7 @@ export default function Home() {
         bySector,
         byState,
         byLeadManager,
+        bySpread,
         byTaxStatus,
         byIntersection,
       } = filteredData.filteredDeals;
@@ -106,6 +108,7 @@ export default function Home() {
         bySector,
         byState,
         byLeadManager,
+        bySpread,
         byTaxStatus,
         byIntersection,
       });
@@ -230,6 +233,11 @@ export default function Home() {
                 <LeadManagerSelector
                   filter={filter}
                   unfilteredDeals={unfilteredDeals}
+                  handleFilterUpdate={handleFilterUpdate}
+                />
+                <FilterSelect
+                  filter={filter}
+                  filterType="spread"
                   handleFilterUpdate={handleFilterUpdate}
                 />
                 <FilterSelect
