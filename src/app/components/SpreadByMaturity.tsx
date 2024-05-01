@@ -1,20 +1,14 @@
 "use client";
 
-import _, { spread } from "lodash";
+import _ from "lodash";
+import { useEffect, useState } from "react";
 import {
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   Cell,
-  AreaChart,
-  Area,
-  Line,
-  LineChart,
   ScatterChart,
   Scatter,
   ZAxis,
@@ -25,6 +19,7 @@ import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./MaturityBreakdown.module.css";
 import { numberFormat } from "@/utils/dataUtils";
+import { spreadLaneData } from "@/utils/spreadUtils";
 
 interface chartProps {
   filter: any;
@@ -33,54 +28,36 @@ interface chartProps {
   handleFilterUpdate: Function;
 }
 
-const spreadLanes = ["-", "a", "b", "c", "d", "e", "f"];
-const spreadLaneData: Record<string, any> = {
-  "-": {
-    key: "-",
-    label: "NA",
-  },
-  a: {
-    key: "a",
-    label: "<1",
-    max: 1,
-  },
-  b: {
-    key: "b",
-    label: "<5",
-    max: 5,
-  },
-  c: {
-    key: "c",
-    label: "<10",
-    max: 10,
-  },
-  d: {
-    key: "d",
-    label: "<50",
-    max: 50,
-  },
-  e: {
-    key: "e",
-    label: "<75",
-    max: 75,
-  },
-  f: {
-    key: "f",
-    label: "75+",
-    max: 100000,
-  },
-};
-
 const SpreadByMaturity = ({
   filter,
   unfilteredData,
   filteredData,
   handleFilterUpdate,
 }: chartProps) => {
+  // Hold some data in component state
+  const [earliestYear, setEarliestYear] = useState(0);
+  const [latestYear, setLatestYear] = useState(0);
+
+  useEffect(() => {
+    // Remove maturities without spread values
+    let maturitiesWithSpreadValues = _.filter(
+      unfilteredData,
+      (maturity: any) => {
+        return maturity["Spread"] != "-";
+      }
+    );
+    // Build an array of years with total par amounts
+    let yearArray = _.map(maturitiesWithSpreadValues, (maturity: any) => {
+      return maturity.Structure;
+    });
+    setEarliestYear(_.min(yearArray));
+    setLatestYear(_.max(yearArray));
+  }, [unfilteredData]);
+
   // Build an array of years with total par amounts
-  const yearsPresent = _.map(unfilteredData, (maturity: any) => {
-    return maturity.Structure;
-  });
+  //   const yearsPresent = _.map(unfilteredData, (maturity: any) => {
+  //     return maturity.Structure;
+  //   });
   // Function for determining which range of spreads a maturity falls into
   const getSpreadRange = (maturity: any) => {
     // from spread data, take first value and remove plus sign if present
@@ -103,9 +80,6 @@ const SpreadByMaturity = ({
       return spreadLaneData.f.key;
     }
   };
-  // Get the time span represented by the data
-  const earliestYear = _.min(yearsPresent);
-  const latestYear = _.max(yearsPresent);
   const yearSpan = latestYear - earliestYear + 1;
   // Get maturities keyed by year
   let getSpreadByMaturity = (data: any) => {
@@ -125,11 +99,13 @@ const SpreadByMaturity = ({
               let maturity = Number(spreadGrouping[0].Structure);
               let spreadLane = getSpreadRange(spreadGrouping[0]);
               let totalPar = _.sumBy(spreadGrouping, "Filtered Par");
+              let dealCount = spreadGrouping.length;
               return {
                 id: `${maturity}-${spreadLane}`,
                 maturity,
                 spreadLane,
                 totalPar,
+                dealCount,
               };
             })
             .value(),
@@ -159,16 +135,9 @@ const SpreadByMaturity = ({
   let maxParValue = _.max(parValueArray);
   let domain = [0, maxParValue || 100];
   // Loop through years in range and add in data for empty spots
-  //   console.log(
-  //     "CHECK ARRAY LENGTHS",
-  //     unfilteredParByMaturity.length,
-  //     filteredParByMaturity.length
-  //   );
   _.times(yearSpan, (index: number) => {
     let year = earliestYear + index;
-    // console.log("LOOPING THROUGH YEAR", year);
-    _.each(_.slice(spreadLanes, 1), (spreadLane: string) => {
-      //   console.log("LOOPING THROUGH SPREAD LANES", spreadLane);
+    _.each(_.slice(_.keys(spreadLaneData), 1), (spreadLane: string) => {
       // find existing objects for this combination of year and spread lane
       let unfilteredItem = _.find(unfilteredParByMaturity, (item: any) => {
         return item.maturity === year && item.spreadLane === spreadLane;
@@ -178,21 +147,21 @@ const SpreadByMaturity = ({
       });
       // if nothing is found, add one with zero total par
       if (unfilteredItem === undefined) {
-        // console.log("FILTERED ITEM IS DEFINED");
         unfilteredParByMaturity.push({
           id: `${year}-${spreadLane}`,
           maturity: year,
           spreadLane,
           totalPar: 0,
+          dealCount: 0,
         });
       }
       if (filteredItem === undefined) {
-        // console.log("FILTERED ITEM IS UNDEFINED");
         filteredParByMaturity.push({
           id: `${year}-${spreadLane}`,
           maturity: year,
           spreadLane,
           totalPar: 0,
+          dealCount: 0,
         });
       }
     });
@@ -209,9 +178,21 @@ const SpreadByMaturity = ({
     ["asc", "asc"]
   );
 
-  //   const handleClick = (data: any, index: number) => {
-  //     handleFilterUpdate("maturities", `${data.name}`);
-  //   };
+  const tooltipFormatter = (value: any, name: string, props: any) => {
+    // Choose the right format based on field name
+    if (props) {
+      if (props.name === "totalPar") {
+        return [`${numberFormat(props.value, "par-axis")}Mn`, "Total Par"];
+      } else if (props.name === "spreadLane") {
+        return [spreadLaneData[props.value].label, "Spread"];
+      } else if (props.name === "maturity") {
+        return [props.value, "Year"];
+      } else if (props.name === "dealCount") {
+        return [props.value, "Deal Count"];
+      }
+    }
+    return false;
+  };
 
   return (
     <Card>
@@ -224,7 +205,6 @@ const SpreadByMaturity = ({
           <ScatterChart
             width={500}
             height={400}
-            // data={unfilteredParByMaturity}
             margin={{
               top: 10,
               right: 30,
@@ -233,15 +213,17 @@ const SpreadByMaturity = ({
             }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
+              xAxisId={1}
               stroke={palettes.grayscale[6]}
               interval={0}
-              scale="linear"
               type="number"
+              allowDuplicatedCategory={true}
               dataKey="maturity"
               domain={[earliestYear, latestYear]}
               tickFormatter={(value: any) => {
                 return `'${`${value}`.slice(-2)}`;
               }}
+              tickCount={latestYear - earliestYear + 1}
             />
             <YAxis
               stroke={palettes.grayscale[6]}
@@ -251,37 +233,22 @@ const SpreadByMaturity = ({
               tickFormatter={(value: any, index: number) => {
                 return spreadLaneData[value].label;
               }}
+              onClick={(event: any) => console.log(event.value)}
             />
-            <ZAxis
-              type="number"
-              dataKey="totalPar"
-              domain={domain}
-              range={[0, 1000]}
-            />
-            <Tooltip
-              formatter={(value: number, key: any) => {
-                console.log("TOOLTIP VALUE", value);
-                // return `${numberFormat(value, "par-axis")}Mn`;
-                if (key === "totalPar") {
-                  return [`${numberFormat(value, "par-axis")}Mn`, "Total Par"];
-                } else if (key === "spreadLane") {
-                  return [spreadLaneData[value].label, "Spread"];
-                } else if (key === "maturity") {
-                  return [value, "Year"];
-                }
-                return false;
-              }}
-            />
+            <ZAxis type="number" dataKey="totalPar" range={[0, 1000]} />
+            <Tooltip formatter={tooltipFormatter} />
             <Scatter
+              xAxisId={1}
+              name="Unfiltered Spread by Maturity"
               id="id"
-              name="Unfiltered"
               type="number"
               data={unfilteredParByMaturity}
               fill={palettes.grayscale[2]}
             />
             <Scatter
               id="id"
-              name="Filtered"
+              xAxisId={1}
+              name="Filtered Spread by Maturity"
               type="number"
               data={filteredParByMaturity}
               fill={palettes.red[6]}>
@@ -294,126 +261,13 @@ const SpreadByMaturity = ({
                   e: palettes.orange[4],
                   f: palettes.red[4],
                 };
-                // console.log("ENTRY", entry, colors[entry.spreadLane]);
                 return (
                   <Cell key={`cell-${index}`} fill={colors[entry.spreadLane]} />
                 );
               })}
             </Scatter>
-            {/* <Bar
-              //   type="monotone"
-              dataKey="spreadLane2"
-              stackId="1"
-              //   stroke="#82ca9d"
-              stroke={palettes.yellow[4]}
-              fill={palettes.yellow[4]}
-            />
-            <Bar
-              //   type="monotone"
-              dataKey="spreadLane3"
-              stackId="1"
-              //   stroke="#ffc658"
-              stroke={palettes.green[4]}
-              fill={palettes.green[4]}
-            />
-            <Bar
-              //   type="monotone"
-              dataKey="spreadLane4"
-              stackId="1"
-              //   stroke="#8884d8"
-              stroke={palettes.blue[4]}
-              fill={palettes.blue[4]}
-            />
-            <Bar
-              //   type="monotone"
-              dataKey="spreadLane5"
-              stackId="1"
-              //   stroke="#82ca9d"
-              stroke={palettes.purple[4]}
-              fill={palettes.purple[4]}
-            />
-            <Bar
-              //   type="monotone"
-              dataKey="spreadLane6"
-              stackId="1"
-              //   stroke="#ffc658"
-              stroke={palettes.magenta[4]}
-              fill={palettes.magenta[4]}
-            /> */}
           </ScatterChart>
         </ResponsiveContainer>
-        {/* <ResponsiveContainer
-          width="100%"
-          height="100%"
-          style={{ flex: 1, fontSize: ".75rem" }}>
-          <BarChart
-            width={500}
-            height={300}
-            data={assembledData}
-            margin={{
-              top: 20,
-              right: 20,
-              left: 20,
-              bottom: 0,
-            }}>
-            <CartesianGrid
-              stroke={palettes.grayscale[2]}
-              strokeDasharray="3 3"
-            />
-            <XAxis stroke={palettes.grayscale[6]} dataKey="name" />
-            <YAxis
-              stroke={palettes.grayscale[6]}
-              tickFormatter={(value: any) => {
-                return numberFormat(Number(value), "par-axis") || "";
-              }}
-            />
-            <Tooltip
-              formatter={(value: number) => {
-                return `${numberFormat(value, "par-axis")}Mn`;
-              }}
-            />
-            <Bar
-              name="Current filter"
-              dataKey="filteredValue"
-              stackId="a"
-              fill={palettes.blue[6]}
-              onClick={handleClick}>
-              {assembledData.map((entry, index) => {
-                return (
-                  <Cell
-                    cursor="pointer"
-                    fill={
-                      _.includes(filter.maturities, entry.name)
-                        ? palettes.blue[7]
-                        : palettes.blue[5]
-                    }
-                    key={`cell-${index}`}
-                  />
-                );
-              })}
-            </Bar>
-            <Bar
-              name="Not in current filter"
-              dataKey="unfilteredValue"
-              stackId="a"
-              fill={palettes.grayscale[2]}
-              onClick={handleClick}>
-              {assembledData.map((entry, index) => {
-                return (
-                  <Cell
-                    cursor="pointer"
-                    fill={
-                      _.includes(filter.maturities, entry.name)
-                        ? palettes.grayscale[3]
-                        : palettes.grayscale[2]
-                    }
-                    key={`cell-${index}`}
-                  />
-                );
-              })}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer> */}
       </div>
     </Card>
   );
