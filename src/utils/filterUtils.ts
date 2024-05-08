@@ -284,7 +284,8 @@ export const applyDealFilters = async (deals: any, filter: any) => {
       couponFloor,
       Number(couponFloor),
       cleanCoupon,
-      currentCouponFloor
+      currentCouponFloor,
+      Number(couponFloor) === Number(currentCouponFloor)
     );
     return Number(couponFloor) === Number(currentCouponFloor);
   };

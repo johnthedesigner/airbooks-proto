@@ -24,6 +24,7 @@ import { type } from "os";
 interface chartProps {
   unfilteredData: any;
   filteredData: any;
+  deals: any;
   handleFilterUpdate: Function;
   filter: any;
 }
@@ -31,6 +32,7 @@ interface chartProps {
 const CouponsCard = ({
   unfilteredData,
   filteredData,
+  deals,
   handleFilterUpdate,
   filter,
 }: chartProps) => {

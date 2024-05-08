@@ -340,6 +340,7 @@ export default function Home() {
                           <CouponsCard
                             unfilteredData={unfilteredMaturities}
                             filteredData={filteredMaturities}
+                            deals={unfilteredDeals}
                             handleFilterUpdate={handleToggleFilterValue}
                             filter={filter}
                           />
