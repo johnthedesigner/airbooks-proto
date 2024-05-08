@@ -124,8 +124,13 @@ const LeagueTable = ({
         <Table
           hoverRow={false}
           noWrap={true}
+          color="primary"
           size={"sm"}
-          sx={{ padding: "0 1rem", width: "100%" }}>
+          sx={{
+            padding: "0 1rem",
+            width: "100%",
+            color: palettes.grayscale[12],
+          }}>
           <thead>
             <tr>
               <td>

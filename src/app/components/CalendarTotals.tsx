@@ -162,10 +162,20 @@ const CalendarTotals = ({
           hoverRow={false}
           noWrap={true}
           size={"sm"}
-          sx={{ padding: "0 1rem", width: "100%" }}>
+          color="primary"
+          sx={{
+            padding: "0 1rem",
+            width: "100%",
+            color: palettes.grayscale[12],
+          }}>
           <thead>
             <tr>
-              <td colSpan={2} style={{ width: "70%", textAlign: "right" }}>
+              <td
+                colSpan={2}
+                style={{
+                  width: "70%",
+                  textAlign: "right",
+                }}>
                 <b>{filterApplied && `Filter / `}Total ($Mn)</b>
               </td>
               <td></td>
