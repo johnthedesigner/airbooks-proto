@@ -16,7 +16,6 @@ import {
 import Card from "./Card";
 import CardHeader from "./CardHeader";
 import styles from "./RatingsCard.module.css";
-import { mapRating } from "@/utils/ratingUtils";
 import { numberFormat } from "@/utils/dataUtils";
 import { palettes } from "@/utils/colorUtils";
 
@@ -45,12 +44,13 @@ const RatingsCard = ({
     "BBB+",
     "BBB",
     "BBB-",
-    "BB+",
-    "BB",
-    "BB-",
-    "B+",
-    "B",
-    "B-",
+    "<IG",
+    // "BB+",
+    // "BB",
+    // "BB-",
+    // "B+",
+    // "B",
+    // "B-",
     "null",
   ];
 

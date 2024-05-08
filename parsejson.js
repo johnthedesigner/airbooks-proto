@@ -1,5 +1,4 @@
 import _ from "lodash";
-// const fs = require("fs");
 import fs from "fs";
 
 const storeData = (data, path) => {
@@ -19,69 +18,73 @@ const loadData = (path) => {
   }
 };
 
+// Define rating mapping values and return simple rating
+const ratingsA = ["A", "A2"];
+const ratingsAMinus = ["A-", "A3"];
+const ratingsAPlus = ["A+", "A1"];
+const ratingsAA = ["AA", "Aa", "Aa2"];
+const ratingsAAMinus = ["AA-", "Aa3"];
+const ratingsAAPlus = ["AA+", "Aa1"];
+const ratingsAAA = ["AAA", "Aaa", "Aaa2"];
+const ratingsB = ["B", "B2"];
+const ratingsBMinus = ["B-", "B3"];
+const ratingsBPlus = ["B+", "B1"];
+const ratingsBB = ["BB", "Ba2", "Ba"];
+const ratingsBBMinus = ["BB-", "Ba3"];
+const ratingsBBPlus = ["BB+", "Ba1"];
+const ratingsBBB = ["BBB", "Baa2", "Baa"];
+const ratingsBBBMinus = ["BBB-", "Baa3"];
+const ratingsBBBPlus = ["BBB+", "Baa1"];
+const mapToArray = (input) => {
+  if (_.includes(ratingsAAA, input)) {
+    return "AAA";
+  } else if (_.includes(ratingsAAPlus, input)) {
+    return "AA+";
+  } else if (_.includes(ratingsAA, input)) {
+    return "AA";
+  } else if (_.includes(ratingsAAMinus, input)) {
+    return "AA-";
+  } else if (_.includes(ratingsAPlus, input)) {
+    return "A+";
+  } else if (_.includes(ratingsA, input)) {
+    return "A";
+  } else if (_.includes(ratingsAMinus, input)) {
+    return "A-";
+  } else if (_.includes(ratingsBBBPlus, input)) {
+    return "BBB+";
+  } else if (_.includes(ratingsBBB, input)) {
+    return "BBB";
+  } else if (_.includes(ratingsBBBMinus, input)) {
+    return "BBB-";
+  } else if (_.includes(ratingsBBPlus, input)) {
+    // return "BB+";
+    return "<IG";
+  } else if (_.includes(ratingsBB, input)) {
+    // return "BB";
+    return "<IG";
+  } else if (_.includes(ratingsBBMinus, input)) {
+    // return "BB-";
+    return "<IG";
+  } else if (_.includes(ratingsBPlus, input)) {
+    // return "B+";
+    return "<IG";
+  } else if (_.includes(ratingsB, input)) {
+    // return "B";
+    return "<IG";
+  } else if (_.includes(ratingsBMinus, input)) {
+    // return "B-";
+    return "<IG";
+  } else {
+    return "Not Rated";
+  }
+};
+
 export const mapRating = (rating) => {
   // Only use one rating when other values are provided
   rating = rating.split(",")[0];
   rating = rating.split(" (")[0];
   // Strip asterisk
   rating = rating.split("*")[0];
-
-  // Define
-  const ratingsA = ["A", "A2"];
-  const ratingsAMinus = ["A-", "A3"];
-  const ratingsAPlus = ["A+", "A1"];
-  const ratingsAA = ["AA", "Aa", "Aa2"];
-  const ratingsAAMinus = ["AA-", "Aa3"];
-  const ratingsAAPlus = ["AA+", "Aa1"];
-  const ratingsAAA = ["AAA", "Aaa", "Aaa2"];
-  const ratingsB = ["B", "B2"];
-  const ratingsBMinus = ["B-", "B3"];
-  const ratingsBPlus = ["B+", "B1"];
-  const ratingsBB = ["BB", "Ba2", "Ba"];
-  const ratingsBBMinus = ["BB-", "Ba3"];
-  const ratingsBBPlus = ["BB+", "Ba1"];
-  const ratingsBBB = ["BBB", "Baa2", "Baa"];
-  const ratingsBBBMinus = ["BBB-", "Baa3"];
-  const ratingsBBBPlus = ["BBB+", "Baa1"];
-
-  const mapToArray = (input) => {
-    if (_.includes(ratingsA, rating)) {
-      return "A";
-    } else if (_.includes(ratingsAMinus, rating)) {
-      return "A-";
-    } else if (_.includes(ratingsAPlus, rating)) {
-      return "A+";
-    } else if (_.includes(ratingsAA, rating)) {
-      return "AA";
-    } else if (_.includes(ratingsAAMinus, rating)) {
-      return "AA-";
-    } else if (_.includes(ratingsAAPlus, rating)) {
-      return "AA+";
-    } else if (_.includes(ratingsAAA, rating)) {
-      return "AAA";
-    } else if (_.includes(ratingsB, rating)) {
-      return "B";
-    } else if (_.includes(ratingsBMinus, rating)) {
-      return "B-";
-    } else if (_.includes(ratingsBPlus, rating)) {
-      return "B+";
-    } else if (_.includes(ratingsBB, rating)) {
-      return "BB";
-    } else if (_.includes(ratingsBBMinus, rating)) {
-      return "BB-";
-    } else if (_.includes(ratingsBBPlus, rating)) {
-      return "BB+";
-    } else if (_.includes(ratingsBBB, rating)) {
-      return "BBB";
-    } else if (_.includes(ratingsBBBMinus, rating)) {
-      return "BBB-";
-    } else if (_.includes(ratingsBBBPlus, rating)) {
-      return "BBB+";
-    } else {
-      return "Not Rated";
-    }
-  };
-
   return mapToArray(rating);
 };
 
@@ -151,6 +154,7 @@ const mapDealMaturityData = (deals, maturities) => {
       data.push({
         name: `${structureIndex}`,
         par: currentMaturity ? currentMaturity["Filtered Par"] : 0,
+        coupon: currentMaturity ? currentMaturity["Coupon"] : "-",
         structureIndex,
         key: `${deal.Index}-${structureIndex}`,
       });

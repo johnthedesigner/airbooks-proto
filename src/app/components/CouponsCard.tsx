@@ -24,20 +24,27 @@ import { type } from "os";
 interface chartProps {
   unfilteredData: any;
   filteredData: any;
+  handleFilterUpdate: Function;
   filter: any;
 }
 
-const CouponsCard = ({ unfilteredData, filteredData, filter }: chartProps) => {
+const CouponsCard = ({
+  unfilteredData,
+  filteredData,
+  handleFilterUpdate,
+  filter,
+}: chartProps) => {
   // Coupon categories
   const [unfilteredCouponData, setUnfilteredCouponData] = useState(new Array());
   const [filteredCouponData, setFilteredCouponData] = useState(new Array());
+  const [assembledData, setAssembledData] = useState(new Array());
   // Get object of coupon values with corresponding par totals
   const getParByCoupon = (maturityData: any[]) => {
-    let filteredMaturityData = _.filter(maturityData, (maturity: any) => {
+    let cleanedMaturityData = _.filter(maturityData, (maturity: any) => {
       return maturity["Coupon"] != "-";
     });
     let parTotals = _.reduce(
-      filteredMaturityData,
+      cleanedMaturityData,
       (result: any, maturity: any) => {
         // Make sure we have a result object and property to start with
         result || (result = {});
@@ -75,12 +82,25 @@ const CouponsCard = ({ unfilteredData, filteredData, filter }: chartProps) => {
       },
       {}
     );
-    let couponValues = _.keys(parTotals);
+    console.log("PAR TOTALS", parTotals);
     let assembledData = _.map(parTotals, (couponItem: string) => {
       return couponItem;
     });
-    // console.log(assembledData);
+    console.log("ASSEMBLED", assembledData);
     return assembledData;
+  };
+
+  const assembleData = (unfilteredParTotals: any, filteredParTotals: any) => {
+    return _.map(unfilteredParTotals, (unfilteredItem: any, key: number) => {
+      let filteredItem = filteredParTotals[key] || {
+        totalPar: 0,
+      };
+      return {
+        ...unfilteredItem,
+        parDelta: unfilteredItem.totalPar - filteredItem.totalPar,
+        filteredPar: filteredItem.totalPar,
+      };
+    });
   };
 
   useEffect(() => {
@@ -88,9 +108,18 @@ const CouponsCard = ({ unfilteredData, filteredData, filter }: chartProps) => {
     let filteredMaturities = filteredData || new Array();
     let unfilteredCouponDataUpdated = getParByCoupon(unfilteredMaturities);
     let filteredCouponDataUpdated = getParByCoupon(filteredMaturities);
+    let assembledDataUpdated = assembleData(
+      unfilteredCouponDataUpdated,
+      filteredCouponDataUpdated
+    );
     setUnfilteredCouponData(unfilteredCouponDataUpdated);
     setFilteredCouponData(filteredCouponDataUpdated);
+    setAssembledData(assembledDataUpdated);
   }, [unfilteredData, filteredData]);
+
+  const handleClick = (data: any) => {
+    handleFilterUpdate("coupon", data.couponFloor);
+  };
 
   return (
     <Card>
@@ -103,7 +132,7 @@ const CouponsCard = ({ unfilteredData, filteredData, filter }: chartProps) => {
           <BarChart
             width={500}
             height={300}
-            data={unfilteredCouponData}
+            data={assembledData}
             margin={{
               top: 20,
               right: 20,
@@ -132,29 +161,44 @@ const CouponsCard = ({ unfilteredData, filteredData, filter }: chartProps) => {
             />
             <Bar
               name="Current filter"
-              dataKey="totalPar"
+              dataKey="filteredPar"
               stackId="a"
-              fill={palettes.magenta[3]}
-            />
-            {/* {_.map(unfilteredCouponData, (couponItem: any) => {
-              return _.map(
-                couponItem.couponArray,
-                (couponString: string, index: number) => {
-                  return (
-                    <Bar
-                      key={index}
-                      dataKey={couponString}
-                      stackId={"a"}
-                      fill="#8884d8"
-                    />
-                  );
-                }
-              );
-            })} */}
-            {/* <Bar dataKey="Fitch" stackId="a" fill="#8884d8" />
-            <Bar dataKey="Kroll" stackId="a" fill="#82ca9d" />
-            <Bar dataKey="Moody's" stackId="a" fill="#FFBB28" />
-            <Bar dataKey="Standard & Poor's" stackId="a" fill="#FF8042" /> */}
+              fill={palettes.magenta[5]}
+              onClick={handleClick}>
+              {assembledData.map((entry, index) => {
+                return (
+                  <Cell
+                    cursor="pointer"
+                    fill={
+                      _.includes(filter.sector, entry.couponFloor)
+                        ? palettes.magenta[5]
+                        : palettes.magenta[4]
+                    }
+                    key={`cell-${index}`}
+                  />
+                );
+              })}
+            </Bar>
+            <Bar
+              name="Not in current filter"
+              dataKey="parDelta"
+              stackId="a"
+              fill={palettes.grayscale[5]}
+              onClick={handleClick}>
+              {assembledData.map((entry, index) => {
+                return (
+                  <Cell
+                    cursor="pointer"
+                    fill={
+                      _.includes(filter.sector, entry.couponFloor)
+                        ? palettes.grayscale[3]
+                        : palettes.grayscale[2]
+                    }
+                    key={`cell-${index}`}
+                  />
+                );
+              })}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

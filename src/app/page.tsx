@@ -33,7 +33,6 @@ import DealTable from "./components/DealTable";
 import RatingsCard from "./components/RatingsCard";
 import SectorCard from "./components/SectorCard";
 import MaturityBreakdown from "./components/MaturityBreakdown";
-// import { mapRatings } from "@/utils/ratingUtils";
 import FilterSelect from "./components/filter/FilterSelect";
 import MapCard from "./components/MapCard";
 import CalendarTotals from "./components/CalendarTotals";
@@ -55,6 +54,7 @@ console.error = (...args: any) => {
 export default function Home() {
   var filteredDealsInitialState = {
     byRating: new Array() as any[],
+    byCoupon: new Array() as any[],
     byMaturity: new Array() as any[],
     bySector: new Array() as any[],
     byState: new Array() as any[],
@@ -94,6 +94,7 @@ export default function Home() {
       );
       let {
         byRating,
+        byCoupon,
         byMaturity,
         bySector,
         byState,
@@ -104,6 +105,7 @@ export default function Home() {
       } = filteredData.filteredDeals;
       setFilteredDeals({
         byRating,
+        byCoupon,
         byMaturity,
         bySector,
         byState,
@@ -230,6 +232,11 @@ export default function Home() {
                 />
                 <FilterSelect
                   filter={filter}
+                  filterType="coupon"
+                  handleFilterUpdate={handleFilterUpdate}
+                />
+                <FilterSelect
+                  filter={filter}
                   filterType="sector"
                   handleFilterUpdate={handleFilterUpdate}
                 />
@@ -333,6 +340,7 @@ export default function Home() {
                           <CouponsCard
                             unfilteredData={unfilteredMaturities}
                             filteredData={filteredMaturities}
+                            handleFilterUpdate={handleToggleFilterValue}
                             filter={filter}
                           />
                         </Cell>

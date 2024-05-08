@@ -1,10 +1,12 @@
 import _ from "lodash";
 import { singleValue } from "./dataUtils";
 import { spreadLaneData } from "./spreadUtils";
+import { couponData } from "./couponUtils";
 
 // Initial filter state
 export const filterState = {
   rating: [],
+  coupon: [],
   maturities: [],
   sector: [],
   state: [],
@@ -17,6 +19,7 @@ export const filterState = {
 // Interface for managing filter state
 export interface filterStateInterface {
   rating?: string[];
+  coupon?: string[];
   maturities?: string[];
   sector?: string[];
   state?: string[];
@@ -34,6 +37,7 @@ export interface filterItemInterface {
 
 export interface filterListInterface {
   [rating: string]: filterItemInterface;
+  coupon: filterItemInterface;
   maturities: filterItemInterface;
   sector: filterItemInterface;
   state: filterItemInterface;
@@ -65,6 +69,20 @@ export const filterList: filterListInterface = {
       { label: "AA", value: "AA" },
       { label: "AA+", value: "AA+" },
       { label: "AAA", value: "AAA" },
+    ],
+  },
+  coupon: {
+    label: "Coupon",
+    key: "coupon",
+    options: [
+      { label: "0", value: "0" },
+      { label: "1", value: "1" },
+      { label: "2", value: "2" },
+      { label: "3", value: "3" },
+      { label: "4", value: "4" },
+      { label: "5", value: "5" },
+      { label: "6", value: "6" },
+      { label: "7", value: "7" },
     ],
   },
   state: {
@@ -221,6 +239,7 @@ export const substituteFilter = (filter: any, key: string, value: any) => {
 
 // Apply filters and return resulting maturities
 export const applyDealFilters = async (deals: any, filter: any) => {
+  console.log("TEST FILTER", filter);
   let filteredDeals = await _(deals)
     .filter((m: any) => {
       return (
@@ -253,6 +272,39 @@ export const applyDealFilters = async (deals: any, filter: any) => {
         _.includes(filter.rating, singleValue(deal.fitchNormal)) ||
         _.includes(filter.rating, singleValue(deal.krollNormal))
       );
+    })
+    .value();
+
+  // Get deals filtered by coupon
+  const checkCoupon = (coupon: any, couponFloor: any) => {
+    let cleanCoupon = `${coupon}`.split(",")[0];
+    let currentCouponFloor = Math.floor(Number(cleanCoupon));
+    console.log(
+      "CHECK COUPON",
+      couponFloor,
+      Number(couponFloor),
+      cleanCoupon,
+      currentCouponFloor
+    );
+    return Number(couponFloor) === Number(currentCouponFloor);
+  };
+  let byCoupon = await _(deals)
+    .filter((deal: any) => {
+      let couponValues = _.map(deal.structureArray, (maturity: any) => {
+        // console.log("CHECK MATURITY", maturity);
+        return maturity["Coupon"];
+      });
+      // console.log("COUPON FILTER", filter.coupon, couponValues);
+      // Check if any of the maturities match current spread filter
+      let couponChecks = new Array();
+      _.each(filter.coupon, (couponFloor: string) => {
+        _.each(couponValues, (value: number) => {
+          let numericValue = Number(value);
+          couponChecks.push(checkCoupon(value, couponFloor));
+        });
+      });
+      // console.log("COUPON CHECKS", couponChecks);
+      return filter.coupon.length === 0 || _.includes(couponChecks, true);
     })
     .value();
 
@@ -349,6 +401,7 @@ export const applyDealFilters = async (deals: any, filter: any) => {
 
   let byIntersection = await _.intersection(
     byRating,
+    byCoupon,
     byMaturity,
     bySector,
     byState,
@@ -361,6 +414,7 @@ export const applyDealFilters = async (deals: any, filter: any) => {
   return {
     allDeals: filteredDeals,
     byRating,
+    byCoupon,
     byMaturity,
     bySector,
     byState,
