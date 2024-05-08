@@ -125,7 +125,7 @@ const CouponsCard = ({
 
   return (
     <Card>
-      <CardHeader label="Total Par by Rating ($Mn)" />
+      <CardHeader label="Total Par by Coupon ($Mn)" />
       <div className={styles["chart__wrapper"]}>
         <ResponsiveContainer
           width="100%"
