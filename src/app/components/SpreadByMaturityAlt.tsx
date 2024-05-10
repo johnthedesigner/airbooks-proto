@@ -257,7 +257,7 @@ const SpreadByMaturity = ({
               }}
               onClick={(event: any) => handleAxisClick(event.value)}
             />
-            <ZAxis type="number" dataKey="totalPar" range={[0, 1000]} />
+            <ZAxis type="number" dataKey="totalPar" range={[0, 6000]} />
             <Tooltip formatter={tooltipFormatter} />
             <Scatter
               xAxisId={1}
