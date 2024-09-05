@@ -64,6 +64,7 @@ const MaturitySelector = ({
             endDecorator={
               filter.maturities.length > 0 && (
                 <IconButton
+                  color="primary"
                   onClick={(e) => {
                     handleChange(e, []);
                   }}>

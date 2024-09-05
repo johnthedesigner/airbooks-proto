@@ -41,6 +41,7 @@ const FilterSelect = ({
             endDecorator={
               filter[filterType].length > 0 && (
                 <IconButton
+                  color="primary"
                   onClick={(e) => {
                     handleChange(e, []);
                   }}>

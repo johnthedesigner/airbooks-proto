@@ -37,9 +37,10 @@ const WeekSelector = ({
             value={selectedWeek}
             size={"sm"}
             onChange={handleChange}
-            color="neutral"
+            color="primary"
             startDecorator={
               <IconButton
+                color="primary"
                 style={{ zIndex: 1 }}
                 disabled={selectedWeek <= 0}
                 onClick={() => {
@@ -50,6 +51,7 @@ const WeekSelector = ({
             }
             endDecorator={
               <IconButton
+                color="primary"
                 disabled={selectedWeek + 1 > weeks.length - 1}
                 onClick={() => {
                   setSelectedWeek(selectedWeek + 1);

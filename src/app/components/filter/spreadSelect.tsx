@@ -35,6 +35,7 @@ const SpreadSelect = ({ filter, width, handleFilterUpdate }: filterProps) => {
             endDecorator={
               filter.spread.length > 0 && (
                 <IconButton
+                  color="primary"
                   onClick={(e) => {
                     handleChange(e, []);
                   }}>
