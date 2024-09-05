@@ -43,6 +43,7 @@ import LeadManagerSelector from "../components/filter/LeadManagerSelector";
 import { numberFormat } from "@/utils/dataUtils";
 import CouponsCard from "../components/CouponsCard";
 import SpreadByMaturityAlt from "../components/SpreadByMaturityAlt";
+import FakeHeader from "../components/FakeHeader";
 
 // Getting rid of annoying error messages
 const error = console.error;
@@ -152,6 +153,9 @@ export default function Home() {
   return (
     <CssVarsProvider theme={theme}>
       <main className={styles.main}>
+        <div className={styles["fake-header"]}>
+          <FakeHeader />
+        </div>
         <div className={styles["header"]}>
           <div>
             <WeekSelector

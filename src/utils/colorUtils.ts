@@ -180,6 +180,12 @@ export const theme = extendTheme({
           700: palettes.blue[12],
           800: palettes.blue[14],
           900: palettes.blue[15],
+          // plainBg: palettes.blue[3],
+          plainColor: palettes.grayscale[1],
+          plainHoverColor: palettes.grayscale[3],
+          plainActiveColor: palettes.grayscale[3],
+          plainHoverBg: palettes.grayscale[4],
+          plainActiveBg: palettes.grayscale[5],
         },
         neutral: {
           50: palettes.grayscale[0],

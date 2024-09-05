@@ -61,3 +61,8 @@
   padding: 0 0.5rem 0.5rem;
   align-items: flex-end;
 }
+
+.fake-header {
+  width: 100%;
+  height: 84px;
+}

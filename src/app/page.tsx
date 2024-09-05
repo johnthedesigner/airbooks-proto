@@ -43,6 +43,7 @@ import LeadManagerSelector from "./components/filter/LeadManagerSelector";
 import { numberFormat } from "@/utils/dataUtils";
 import CouponsCard from "./components/CouponsCard";
 import SpreadByMaturity from "./components/SpreadByMaturity";
+import FakeHeader from "./components/FakeHeader";
 
 // Getting rid of annoying error messages
 const error = console.error;
@@ -152,6 +153,9 @@ export default function Home() {
   return (
     <CssVarsProvider theme={theme}>
       <main className={styles.main}>
+        <div className={styles["fake-header"]}>
+          <FakeHeader />
+        </div>
         <div className={styles["header"]}>
           <div>
             <WeekSelector
@@ -172,25 +176,25 @@ export default function Home() {
               {/* <FormLabel>View Mode</FormLabel> */}
               <ButtonGroup
                 size={"sm"}
-                color="neutral"
+                color="primary"
                 sx={{ "--ButtonGroup-separatorColor": palettes.grayscale[10] }}>
                 <Button
                   variant={viewMode === "table" ? "solid" : "soft"}
-                  color="neutral"
+                  color="primary"
                   size={"sm"}
                   onClick={() => setViewMode("table")}>
                   Table
                 </Button>
                 <Button
                   variant={viewMode === "charts" ? "solid" : "soft"}
-                  color="neutral"
+                  color="primary"
                   size={"sm"}
                   onClick={() => setViewMode("charts")}>
                   Charts
                 </Button>
                 <Button
                   variant={viewMode === "combo" ? "solid" : "soft"}
-                  color="neutral"
+                  color="primary"
                   size={"sm"}
                   onClick={() => setViewMode("combo")}>
                   Both

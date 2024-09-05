@@ -62,6 +62,7 @@ const LeadManagerSelector = ({
             endDecorator={
               filter.leadManager.length > 0 && (
                 <IconButton
+                  color="primary"
                   onClick={(e) => {
                     handleChange(e, []);
                   }}>
